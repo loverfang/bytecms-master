@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugins>
+    <plugin>
+        <name>A插件</name>
+        <version>1.0</version>
+        <author>LG</author>
+        <jar>E:\BLOG\webfile\think-addon-aliyun-1.0-SNAPSHOT.jar</jar>
+        <class>OssPlugin</class>
+        <signaturer>123456</signaturer>
+    </plugin>
+</plugins>

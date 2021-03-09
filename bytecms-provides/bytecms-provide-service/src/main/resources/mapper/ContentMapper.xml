@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.content.ContentMapper">
+
+    <!-- 通用查询映射结果 -->
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,  title, user_id, check_user_id, category_id, model_id, parent_id, quote_content_id, copied, author, editor, only_url, has_images, has_files, has_static, url, description, tag_ids, dictionar_values, cover, childs, scores, comments, clicks, publish_date, expiry_date, check_date, update_date, create_date, sort, status, disabled
+    </sql>
+
+
+    <update id="updateContentModel">
+        UPDATE thinkcms_content SET model_id =#{modelId} WHERE category_id = #{categoryId}
+        <if test="condition == null ">
+            AND model_id = ''
+        </if>
+
+        <if test="condition !=null ">
+            AND model_id != #{condition}
+        </if>
+
+    </update>
+
+
+    <select id="listPage" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.id,content.title,category.`name` as categoryName,model.`name` as modelName,content.create_name,
+        content.create_id,content.gmt_create,content.publish_date,content.`status`,content.check_user_id,
+        content.check_user_name,content.expiry_date,content.sort,content.gmt_create,content.publish_date,content.url,
+        content.recommend,content.hot,content.notice,content.description,content.top_tag
+        FROM thinkcms_content content LEFT JOIN thinkcms_category category ON content.category_id=category.id
+        LEFT JOIN thinkcms_model model ON model.id = content.model_id
+        <where>
+            <if test="dto.categoryIds!=null and dto.categoryIds.size()>0">
+                content.category_id IN
+                <foreach collection="dto.categoryIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+            <if test="dto.title!=null and dto.title!='' ">
+                AND content.title LIKE concat('%',#{dto.title},'%')
+            </if>
+
+            <if test="dto.status!=null ">
+                AND content.status =#{dto.status}
+            </if>
+
+            <choose>
+                <when test="dto.statuses!=null and dto.statuses.size()>0 ">
+                    AND content.status IN
+                    <foreach collection="dto.statuses" index="index" item="item" open="(" separator="," close=")">
+                        #{item}
+                    </foreach>
+                </when>
+
+                <otherwise>
+                    AND content.status NOT IN ('2')
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY content.`sort` DESC, content.gmt_create DESC
+    </select>
+
+
+    <select id="pageContentForCategoryGen" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.id,content.title,content.author,content.editor,content.description,content.clicks,content.url,
+        content.copied,content.has_static,content.has_files,content.has_related,content.category_id,
+        content.give_likes,content.publish_date,content.rules_data,resource.file_full_path as cover,
+        attribute.data,attribute.text,model.extend_field_list,model.template_path
+        FROM thinkcms_content content
+        LEFT JOIN sys_resource resource ON resource.id = content.cover
+        LEFT JOIN thinkcms_content_attribute attribute ON attribute.content_id = content.id
+        LEFT JOIN thinkcms_model model ON model.id = content.model_id
+        <where>
+            <if test="categoryId!=null">
+                content.category_id = ${categoryId}
+            </if>
+
+            <if test="status!=null and status.size()>0">
+                AND content.status IN
+                <foreach collection="status" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+
+        </where>
+        ORDER BY content.`sort` DESC, content.publish_date DESC, content.gmt_create DESC
+    </select>
+
+
+    <select id="selectContentByCategorys" resultType="net.bytecms.service.dto.content.ContentDto">
+        <if test="codes!=null and codes.length >0">
+                <foreach collection="codes" index="index" item="item" >
+                ( SELECT content.title,content.author,content.category_id,content.publish_date,content.description,content.clicks,content.give_likes,
+                    content.editor,content.url,resource.file_full_path AS cover, attribute.data,content.model_id, content.has_static,content.has_files,
+                    content.has_related,content.rules_data,content.copied,category.`code` as categoryCode,category.content_path as categoryUrl,
+                    category.name as categoryName FROM thinkcms_content content
+                    RIGHT JOIN thinkcms_category category ON content.category_id = category.id
+                    LEFT JOIN thinkcms_content_attribute attribute ON attribute.content_id = content.id
+                    LEFT JOIN sys_resource resource ON resource.id=content.cover WHERE category.code=#{item} AND content.status IN ('1')
+                    ORDER BY content.sort DESC , content.publish_date DESC
+                    LIMIT 0, #{maxRowNum} )
+                    <if test="(index+1) != codes.length">
+                        UNION ALL
+                    </if>
+                </foreach>
+        </if>
+    </select>
+
+
+    <select id="selectSinglePageContent" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.title,content.publish_date,content.description,content.clicks,content.give_likes,content.editor,content.author,content.url,
+        content.has_files,content.has_static,content.has_related,content.rules_data,content.copied,resource.file_full_path AS cover,attribute.text,
+        attribute.data,content.model_id,model.extend_field_list FROM thinkcms_content content
+        LEFT JOIN thinkcms_content_attribute attribute ON attribute.content_id = content.id
+        LEFT JOIN thinkcms_model model ON model.id = content.model_id
+        LEFT JOIN sys_resource resource ON resource.id=content.cover
+        <where>
+            <if test="categoryId!=null">
+                content.category_id = #{categoryId}
+            </if>
+            AND content.status IN ('1')
+        </where>
+        ORDER BY content.sort ASC
+        LIMIT 0,1
+    </select>
+
+
+    <select id="reStaticBatchGenCid" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.id,content.title,category.id AS categoryId,category.`code` AS
+        categoryCode,content.has_static,content.has_related,content.rules_data,IFNULL(catemodel.template_path,model.template_path) as template_path
+        FROM thinkcms_content content
+        INNER JOIN thinkcms_category category ON category.id = content.category_id
+        INNER JOIN thinkcms_model model ON model.id = content.model_id
+        LEFT JOIN thinkcms_category_model catemodel ON catemodel.model_id=model.id
+        AND  catemodel.category_id =content.category_id
+        WHERE content.id IN
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <select id="pageAllContentForToSolr" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT
+        content.id,
+        content.title,
+        content.author,
+        content.category_id,
+        content.description,
+        content.editor,
+        content.url,
+        content.cover,
+        resource.file_full_path as coverPicUrl,
+        content.`status`,
+        any_value(attr.`text`) as text ,
+        any_value(attr.`data`) as `data` ,
+        GROUP_CONCAT(tag.`name`) AS tagString
+        FROM thinkcms_content content
+        LEFT JOIN thinkcms_content_attribute attr ON attr.content_id = content.id
+        LEFT JOIN thinkcms_tag tag ON FIND_IN_SET(tag.id,content.tag_ids)
+        LEFT JOIN sys_resource resource ON  resource.id=content.cover
+        WHERE content.`status` ='1' AND  content.url is not null  AND content.has_static = 1
+        GROUP BY content.id
+    </select>
+
+
+    <select id="pageAllContentForGen" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT
+         content.id,
+         content.category_id,
+         category.`code` as categoryCode,
+         content.has_static,
+         content.rules_data,
+         content.has_related,
+         content.has_files,
+         content.tag_ids,
+         IFNULL(ANY_VALUE(catemodel.template_path),model.template_path) as template_path,
+         CONCAT(ANY_VALUE(catattr.title),'-',content.title) as title ,
+         ANY_VALUE(catattr.keywords) as keywords,
+         ANY_VALUE(catattr.description) as description
+         FROM thinkcms_content content
+         LEFT JOIN thinkcms_category  category  ON category.id =  content.category_id
+         LEFT JOIN thinkcms_category_attribute catattr ON catattr.category_id = content.category_id
+         LEFT JOIN thinkcms_model model ON model.id = content.model_id
+         LEFT JOIN thinkcms_category_model catemodel ON catemodel.model_id=model.id AND catemodel.category_id =content.category_id
+         WHERE  content.`status` ='1' AND  content.url is not null  AND content.has_static = 1
+         GROUP BY content.id ORDER BY content.sort desc,content.gmt_create desc
+    </select>
+
+
+    <select id="searchByTag" resultType="net.bytecms.service.dto.content.ContentDto">
+         SELECT
+         content.id,
+         content.title,
+         content.description,
+         content.url,
+         content.author,
+         content.publish_date,
+         GROUP_CONCAT(tag.name) AS tagIds ,
+         resource.file_full_path as cover,
+         category.name AS categoryName,
+         category.content_path AS categoryUrl,
+         category.id AS categoryId
+         FROM thinkcms_content content
+         LEFT JOIN thinkcms_tag tag on FIND_IN_SET(tag.id,content.tag_ids)
+         INNER JOIN thinkcms_category category ON category.id = content.category_id
+         LEFT JOIN sys_resource resource ON resource.id = content.cover
+         WHERE  FIND_IN_SET(#{tagId},content.tag_ids) AND  content.status in ('1')
+         GROUP BY content.id
+    </select>
+
+
+
+    <select id="getContentById" resultType="net.bytecms.service.dto.content.ContentDto">
+    SELECT content.id,content.author,content.category_id,content.clicks,content.give_likes,content.description,content.editor,content.publish_date,
+    content.has_files,content.has_static,content.has_related,content.rules_data,content.tag_ids,content.title,content.url,content.copied,resource.file_full_path as cover,
+    attr.text,attr.`data`,model.extend_field_list,category.`code` as categoryCode,category.`name` as categoryName,category.content_path as categoryUrl
+    FROM thinkcms_content content
+    LEFT JOIN sys_resource resource  ON resource.id =content.cover
+    LEFT JOIN thinkcms_content_attribute attr ON attr.content_id = content.id
+    LEFT JOIN thinkcms_model model ON model.id = content.model_id
+    INNER JOIN thinkcms_category category ON category.id=content.category_id
+    WHERE content.id=#{contentId}
+    </select>
+
+    <select id="getByPk" resultType="net.bytecms.service.dto.content.ContentDto">
+    SELECT
+        content.id, GROUP_CONCAT(tag.`name`) AS tagString,content.author,content.category_id,content.clicks,
+        content.give_likes,content.description,content.editor,content.publish_date, content.copied,content.sort,content.rules_data,content.`status`,
+        content.model_id,content.has_static,content.has_related,content.rules_data,content.tag_ids,content.title,content.url,content.cover,
+        resource.file_full_path as coverPicUrl,any_value(attr.`text`) as text , any_value(attr.`data`) as `data` ,model.extend_field_list,
+        model.checked_field_list,model.has_files,category.`code` as categoryCode,category.`name` as categoryName,category.content_path as categoryUrl
+    FROM thinkcms_content content
+    LEFT JOIN sys_resource resource  ON resource.id =content.cover
+    LEFT JOIN thinkcms_content_attribute attr ON attr.content_id = content.id
+    LEFT JOIN thinkcms_model model ON model.id = content.model_id
+    INNER JOIN thinkcms_category category ON category.id=content.category_id
+    LEFT JOIN thinkcms_tag tag ON FIND_IN_SET(tag.id,content.tag_ids)
+    WHERE content.id=#{contentId}
+    GROUP BY content.id
+    </select>
+
+    <select id="getNextOrPreviousContentByIdAndCateg" resultType="net.bytecms.service.dto.content.ContentDto">
+
+    SELECT content.id,content.author,content.category_id,content.clicks,content.give_likes,content.description,content.editor,content.publish_date,
+    content.has_files,content.has_static,content.has_related,content.rules_data,content.tag_ids,content.title,content.url,content.copied,resource.file_full_path as cover,
+    attr.text,attr.`data`,model.extend_field_list,category.`code` as categoryCode,category.`name` as categoryName,category.content_path as categoryUrl
+    FROM thinkcms_content content
+    LEFT JOIN sys_resource resource  ON resource.id =content.cover
+    LEFT JOIN thinkcms_content_attribute attr ON attr.content_id = content.id
+    LEFT JOIN thinkcms_model model ON model.id = content.model_id
+    INNER JOIN thinkcms_category category ON category.id=content.category_id
+    <where>
+        content.status IN ('1')
+        <if test="categoryId!=null and categoryId!='' ">
+            AND content.category_id=#{categoryId}
+        </if>
+
+        <choose>
+            <when test="isNext">
+               AND content.id+0 &gt; CAST(#{contentId}  AS SIGNED)   ORDER BY content.id+0 ASC
+            </when>
+
+            <otherwise>
+                AND content.id+0 &lt;  CAST(#{contentId}  AS SIGNED)  ORDER BY content.id+0 DESC
+            </otherwise>
+        </choose>
+
+    </where>
+        LIMIT 1
+
+    </select>
+
+
+    <select id="getTopTag" resultType="java.lang.String">
+       SELECT top_tag FROM thinkcms_content WHERE top_tag IS NOT NULL GROUP BY top_tag
+    </select>
+
+    <select id="getContentsByTopTag" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.id,content.author,content.category_id,content.clicks,content.give_likes,content.description,content.editor,content.publish_date,
+        content.has_files,content.has_static,content.has_related,content.rules_data,content.tag_ids,content.title,content.url,content.copied,resource.file_full_path as cover,
+        attr.text,attr.`data`,model.extend_field_list,category.`code` as categoryCode,category.`name` as categoryName,category.content_path as categoryUrl,content.top_tag
+        FROM thinkcms_content content
+        LEFT JOIN sys_resource resource  ON resource.id =content.cover
+        LEFT JOIN thinkcms_content_attribute attr ON attr.content_id = content.id
+        LEFT JOIN thinkcms_model model ON model.id = content.model_id
+        INNER JOIN thinkcms_category category ON category.id=content.category_id
+        WHERE FIND_IN_SET(#{tag},content.top_tag)!=0
+        <if test="categoryId!=null and categoryId!='' ">
+            AND content.category_id=#{categoryId}
+        </if>
+        ORDER BY content.sort DESC LIMIT 0,#{rowNum}
+    </select>
+
+
+    <select id="selectContentBySingleCategory" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT content.title,content.author,content.category_id,content.publish_date,content.description,content.clicks,content.give_likes,
+        content.editor,content.url,resource.file_full_path AS cover, attribute.data,content.model_id, content.has_static,content.has_files,
+        content.has_related,content.rules_data,content.copied,category.`code` as categoryCode,category.content_path as categoryUrl,
+        category.name as categoryName  FROM thinkcms_content content
+        RIGHT JOIN thinkcms_category category ON content.category_id = category.id
+        LEFT JOIN thinkcms_content_attribute attribute ON attribute.content_id = content.id
+        LEFT JOIN sys_resource resource ON resource.id=content.cover WHERE category.`code`=#{code} AND content.status IN ('1')
+        ORDER BY content.sort DESC , content.publish_date DESC
+        LIMIT 0, #{rowNum}
+    </select>
+
+</mapper>

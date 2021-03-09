@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.system.mapper.system.MenuMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.system.dto.system.MenuDto">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="url" property="url" />
+        <result column="perms" property="perms" />
+        <result column="type" property="type" />
+        <result column="icon" property="icon" />
+        <result column="order_num" property="orderNum" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+    
+    <select id="selectMenuTreeByUid" resultType="net.bytecms.system.dto.system.MenuDto">
+		select distinct
+		m.id , m.parent_id, m.name, m.url,
+		m.perms,m.`type`,m.icon,m.order_num,m.gmt_create, m.gmt_modified
+		from sys_menu m
+		left
+		join sys_role_menu rm on m.id = rm.menu_id left join
+		sys_user_role ur
+		on rm.role_id =ur.role_id where ur.user_id = #{userId}
+		and
+		m.type in(0,1)
+		order by
+		m.order_num
+	</select>
+	
+	 <select id="selectPermsByUid" resultType="java.lang.String">
+		select distinct m.perms
+		from sys_menu m left join
+		sys_role_menu rm on m.id = rm.menu_id
+		left join sys_user_role ur
+		on rm.role_id = ur.role_id where ur.user_id=#{userId} and m.perms is not null
+     </select>
+
+
+	<select id="selectPermsByUrl" resultType="java.lang.String">
+		select distinct m.perms
+		from sys_menu m left join
+		sys_role_menu rm on m.id = rm.menu_id
+		left join sys_user_role ur
+		on rm.role_id = ur.role_id where  find_in_set(#{url},m.url) !=0   and m.perms is not null
+     </select>
+
+
+     
+     <select id="selectMenuUid" parameterType="java.lang.String" resultType="net.bytecms.system.dto.system.MenuDto">
+		select DISTINCT(srm.menu_id) srm_menu ,sm.* FROM sys_user_role ur 
+		INNER JOIN sys_role sr on ur.role_id=sr.id
+		INNER  JOIN sys_role_menu srm on srm.role_id=sr.id
+		INNER JOIN sys_menu sm on sm.id=srm.menu_id
+		where ur.user_id=#{userId}
+     </select>
+</mapper>

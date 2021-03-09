@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.tags.CmsTagsTypeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.tags.CmsTagsType">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="count" property="count" />
+        <result column="create_id" property="createId" />
+        <result column="modified_id" property="modifiedId" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, count, create_id, modified_id, gmt_create, gmt_modified
+    </sql>
+    <select id="listPage" resultType="net.bytecms.service.dto.tags.CmsTagsTypeDto">
+        SELECT  tagType.id,tagType.`name`,tagType.create_id,tagType.modified_id,tagType.gmt_create,count(tag.id) as `count`
+        FROM thinkcms_tag_type tagType LEFT JOIN thinkcms_tag tag on tagType.id = tag.type_id
+        <where>
+            <if test="dto.name!=null and dto.name!='' ">
+                tagType.`name` like concat('%',#{dto.name},'%')
+            </if>
+        </where>
+        GROUP BY tagType.id
+    </select>
+
+</mapper>

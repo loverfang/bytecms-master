@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.category.CmsCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.category.CmsCategory">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="child_ids" property="childIds"/>
+        <result column="tag_type_ids" property="tagTypeIds"/>
+        <result column="code" property="code"/>
+        <result column="template_path" property="templatePath"/>
+        <result column="path" property="path"/>
+        <result column="only_url" property="onlyUrl"/>
+        <result column="has_static" property="hasStatic"/>
+        <result column="url" property="url"/>
+        <result column="content_path" property="contentPath"/>
+        <result column="contain_child" property="containChild"/>
+        <result column="page_size" property="pageSize"/>
+        <result column="allow_contribute" property="allowContribute"/>
+        <result column="sort" property="sort"/>
+        <result column="hidden" property="hidden"/>
+        <result column="category_extend_id" property="categoryExtendId"/>
+        <result column="create_id" property="createId"/>
+        <result column="modified_id" property="modifiedId"/>
+        <result column="gmt_create" property="gmtCreate"/>
+        <result column="gmt_modified" property="gmtModified"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        category.id, category.`name`, category.parent_id, category.child_ids, category.tag_type_ids, category.code,
+        category.template_path, category.path, category.only_url, category.has_static,category.auto_gen_static,
+        category.max_static_page,category.url, category.content_path, category.contain_child, category.page_size,
+        category.allow_contribute, category.sort, category.hidden, category.category_extend_id,category.single_page,
+        category.after_gen_second, category.gmt_create
+    </sql>
+
+    <select id="listPage" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+        SELECT own.id,own.`name`,own.parent_id,own.child_ids,own.tag_type_ids,own.code,own.template_path,own.path,
+        own.only_url,own.has_static,own.url,own.content_path,own.contain_child,own.page_size,own.allow_contribute,
+        own.sort,own.hidden,own.category_extend_id,own.gmt_create,own.gmt_modified,IFNULL(parent.name,'父分类') as
+        parentName FROM
+        thinkcms_category own LEFT JOIN thinkcms_category parent ON parent.id=own.parent_id
+        <where>
+            <if test="id!=null and id != '' ">
+                own.parent_id = #{id}
+            </if>
+        </where>
+        ORDER BY own.sort ASC
+    </select>
+    <select id="listCategoryByOrgId" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+        SELECT categ.id,orgcat.org_id,
+        categ.`name`,
+        categ.parent_id,
+        categ.`code`,
+        categ.template_path,
+        categ.path,
+        categ.url,
+        categ.content_path,
+        categ.allow_contribute,
+        categ.single_page,
+        categ.hidden,
+        categ.category_extend_id
+        FROM thinkcms_org_category orgcat
+        INNER JOIN thinkcms_category  categ ON categ.id = orgcat.category_id
+        WHERE orgcat.org_id = #{orgId}
+        ORDER BY categ.sort ASC
+    </select>
+
+
+    <select id="listCategoryByPidAndOrgId" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+        SELECT categ.id,orgcat.org_id,
+        categ.`name`,
+        categ.parent_id,
+        categ.`code`
+        FROM thinkcms_org_category orgcat
+        INNER JOIN thinkcms_category  categ ON categ.id = orgcat.category_id
+        WHERE orgcat.org_id = #{orgId} AND categ.parent_id = #{pid}
+    </select>
+
+    <select id="getByPk" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+        SELECT
+        attr.title,
+        attr.keywords,
+        attr.description,
+        <include refid="Base_Column_List" />
+        FROM thinkcms_category category
+        LEFT JOIN  thinkcms_category_attribute attr ON attr.category_id=category.id
+        <where>
+            category.id=#{id}
+        </where>
+
+    </select>
+
+    <select id="getCategoryInfoByPk" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+        SELECT
+        category.id,
+        category.url,
+        category.`name`,
+        category.`code`,
+        category.content_path,
+        category.category_extend_id,
+        attribute.title,
+        attribute.keywords,
+        attribute.description,
+        attribute.`data`
+        FROM thinkcms_category category  LEFT JOIN thinkcms_category_attribute attribute ON category.id=attribute.category_id
+        <where>
+            <if test="categoryId!=null and categoryId!='' ">
+                category.id=#{categoryId}
+            </if>
+            <if test="categoryCode!=null and categoryCode!='' ">
+              AND  category.code=#{categoryCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectCategoryByCodes" resultType="net.bytecms.service.dto.category.CmsCategoryDto">
+         SELECT
+        category.id,
+        category.url,
+        category.`name`,
+        category.`code`,
+        category.content_path,
+        category.category_extend_id,
+        attribute.title,
+        attribute.keywords,
+        attribute.description,
+        attribute.`data`
+        FROM thinkcms_category category  LEFT JOIN thinkcms_category_attribute attribute ON category.id=attribute.category_id
+        <where>
+            category.code IN
+            <foreach collection="codes" item="code" index="index" open="(" close=")" separator=",">
+                #{code}
+            </foreach>
+            order by field(category.`code`,
+            <foreach collection="codes" item="code" index="index" close=")" separator=",">
+                #{code}
+            </foreach>
+        </where>
+    </select>
+
+</mapper>

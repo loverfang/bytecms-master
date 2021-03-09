@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.content.CmsContentRelatedMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.content.CmsContentRelated">
+        <id column="id" property="id" />
+        <result column="content_id" property="contentId" />
+        <result column="related_content_id" property="relatedContentId" />
+        <result column="user_id" property="userId" />
+        <result column="url" property="url" />
+        <result column="title" property="title" />
+        <result column="description" property="description" />
+        <result column="clicks" property="clicks" />
+        <result column="sort" property="sort" />
+        <result column="create_id" property="createId" />
+        <result column="modified_id" property="modifiedId" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, content_id, related_content_id, user_id, url, title, description, clicks, sort, create_id, modified_id, gmt_create, gmt_modified
+    </sql>
+
+
+    <select id="getRelatedByContentId" resultType="net.bytecms.service.dto.content.ContentDto">
+        SELECT
+        related.content_id,
+        related.related_content_id,
+        related.title,
+        resource.file_full_path as cover,
+        IFNULL(related.description,'') AS description,
+        related.url AS url
+        FROM
+        thinkcms_content_related related
+        INNER JOIN thinkcms_content content ON related.content_id = content.id
+        LEFT JOIN thinkcms_content related_content ON related_content.id=related.related_content_id
+        LEFT JOIN sys_resource resource ON resource.id = related_content.cover
+        WHERE
+        related.content_id = #{contentId}
+        ORDER BY
+        related.sort DESC
+        LIMIT #{count}
+    </select>
+
+</mapper>

@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<directs>
+    <direct>
+        <name>_d_content</name>
+        <example>
+            《@_d_content contentId=contentId》
+            标题：${title!}
+            文章地址：${url!}
+            文章内容：${text!}
+            发布日期：${(publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+            文章简介：${description!}
+            分类ID：${categoryId!}
+            分类名称：${categoryName!}
+            分类编码：${categoryCode!}
+            分类URL：${categoryUrl!}
+            作者：${author!}
+            编辑：${editor!}
+            是否转载：${copied?string('true','false')}
+            是否含附件：${hasFiles?string('true','false')}
+            是否静态化：${hasStatic?string('true','false')}
+            是否含推荐：${hasRelated?string('true','false')}
+            文章封面地址：${cover!}
+            点击次数：${clicks!}
+            点赞次数：${giveLikes!}
+            《/@_d_content》
+        </example>
+
+    </direct>
+
+    <direct>
+        <name>_d_top_tag</name>
+        <example>
+            《@_d_top_tag topTag='xx' rowNum=6 》
+            《#if contents?? &amp;&amp; (contents?size>0)》
+            《#list contents as content》
+            标题：${content.title!}
+            文章地址：${content.url!}
+            文章内容：${content.text!}
+            发布日期：${(content.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+            文章简介：${content.description!}
+            分类ID：${content.categoryId!}
+            分类名称：${content.categoryName!}
+            分类编码：${content.categoryCode!}
+            分类URL：${content.categoryUrl!}
+            作者：${content.author!}
+            编辑：${content.editor!}
+            是否转载：${content.copied?string('true','false')}
+            是否含附件：${content.hasFiles?string('true','false')}
+            是否静态化：${content.hasStatic?string('true','false')}
+            是否含推荐：${content.hasRelated?string('true','false')}
+            文章封面地址：${content.cover!}
+            点击次数：${content.clicks!}
+            点赞次数：${content.giveLikes!}
+            《/#list》
+            《/#if》
+            《/@_d_top_tag》
+        </example>
+
+    </direct>
+
+
+
+    <direct>
+        <name>_d_category_by_code</name>
+        <example>
+            《#assign xxx=['news','tecblog','Java','designPattern']/》
+            《@_d_category_by_code codes = ['news','tecblog','Java','designPattern'] 或者 codes=xxx 如果是前者可省略上行代码》
+                《#list categorys as category》
+                    分类名称：${name}
+                    分类编码：${code}
+                    分类地址：${contentPath}
+                    分类SEO title：${title}
+                    分类SEO keywords：${keywords}
+                    分类SEO description：${description}
+                    分类扩展参数 xxx：${xxx}
+                《/#list》
+            《/@_d_category_by_code》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_content_by_category</name>
+        <example>
+            《#assign xxx=['news','tecblog','Java','designPattern']/》
+            《@_d_content_by_category codes = ['news','tecblog','Java','designPattern'] 或者 codes=xxx 如果是前者可省略上行代码》
+            《#if contentOfcategory["news"]??》
+                《#assign datas=contentOfcategory["news"]/》
+                《#if datas?? &amp;&amp; (datas?size>0)》
+                    《#list datas as data》
+                        标题：${data.title!}
+                        发布日期：${(data.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                        文章简介：${data.description}
+                        文章地址：${data.url}
+                        文章内容：${data.text}
+                        编辑：${data.editor}
+                        文章封面地址：${data.cover}
+                        分类ID：${data.categoryId}
+                        分类名称：${data.categoryName}
+                        分类编码：${data.categoryCode}
+                        分类URL：${data.categoryUrl}
+                        作者：${data.author}
+                        是否转载：${data.copied?string('true','false')}
+                        是否含附件：${data.hasFiles?string('true','false')}
+                        是否静态化：${data.hasStatic?string('true','false')
+                        是否含推荐：${data.hasRelated?string('true','false')}
+                        点击次数：${data.clicks}
+                        点赞次数：${data.giveLikes}
+                    《/#list》
+                《/#if》
+            《/#if》
+            《/@_d_content_by_category》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_category_content</name>
+        <example>
+            《@_d_category_content codes = 'code'》
+                《#list contents as content》
+                标题：${content.title!}
+                发布日期：${(content.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                文章简介：${content.description}
+                文章地址：${content.url}
+                文章内容：${content.text}
+                编辑：${content.editor}
+                文章封面地址：${content.cover}
+                分类ID：${content.categoryId}
+                分类名称：${content.categoryName}
+                分类编码：${content.categoryCode}
+                分类URL：${content.categoryUrl}
+                作者：${content.author}
+                是否转载：${content.copied?string('true','false')}
+                是否含附件：${content.hasFiles?string('true','false')}
+                是否静态化：${content.hasStatic?string('true','false')
+                是否含推荐：${content.hasRelated?string('true','false')}
+                点击次数：${content.clicks}
+                点赞次数：${content.giveLikes}
+            《/#list》
+            《/@_d_category_content》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_single_page</name>
+        <example>
+            《@_d_single_page categoryId=categoryId 》
+                标题：${title!}
+                文章地址：${url!}
+                文章内容：${text!}
+                发布日期：${(publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                文章简介：${description!}
+                分类ID：${categoryId!}
+                分类名称：${categoryName!}
+                分类编码：${categoryCode!}
+                分类URL：${categoryUrl!}
+                作者：${author!}
+                编辑：${editor!}
+                是否转载：${copied?string('true','false')}
+                是否含附件：${hasFiles?string('true','false')}
+                是否静态化：${hasStatic?string('true','false')}
+                是否含推荐：${hasRelated?string('true','false')}
+                文章封面地址：${cover!}
+                点击次数：${clicks!}
+                点赞次数：${giveLikes!}
+            《/@_d_single_page》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_category_info</name>
+        <example>
+            《@_d_category_info categoryId=categoryId》
+            分类名称：${name!}
+            分类编码：${code!}
+            分类地址：${contentPath!}
+            分类SEO title：${title!}
+            分类SEO keywords：${keywords!}
+            分类SEO description：${description!}
+            分类扩展参数 xxx：${xxx!}
+            《/@_d_category_info》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_category_tree</name>
+        <example>
+            《@_d_category_tree》
+               《#list categorys as category》
+                     是否有子分类：${category.hasChildren}
+                     访问地址:${category.url!domain}
+                     分类名称:${category.title}
+                     分类ID:${category.id!}
+                     分类父ID:${category.parentId!}
+               《/#list》
+            《/@_d_category_tree》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_content_list</name>
+        <example>
+            《@_d_content_list  pageNo = pageNo pageSize = pageSize pageCount=pageCount categoryId=categoryId》
+            《#list contents as content》
+                标题：${content.title!}
+                发布日期：${(content.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                文章简介：${content.description!}
+                文章地址：${content.url!}
+                文章内容：${content.text!}
+                编辑：${content.editor!}
+                文章封面地址：${content.cover!}
+                分类ID：${content.categoryId!}
+                作者：${content.author!}
+                是否转载：${content.copied?string('true','false')}
+                是否含附件：${content.hasFiles?string('true','false')}
+                是否静态化：${content.hasStatic?string('true','false')
+                是否含推荐：${content.hasRelated?string('true','false')}
+                点击次数：${content.clicks!}
+                点赞次数：${content.giveLikes!}
+            《/#list》
+            《/@_d_content_list》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_child_category</name>
+        <example>
+            《@_d_child_category categoryId=categoryId》
+            《#if pcategory?? 》
+            父分类名称：${pcategory.name!}
+            父分类编码：${pcategory.code!}
+            父分类地址：${pcategory.contentPath!}
+            父分类ID：${pcategory.id!}
+            《/#if》
+            《#if categorys ?? &amp;&amp; (categorys?size>0) 》
+            《#list categorys as category》
+                子分类名称：${category.name!}
+                子分类编码：${category.code!}
+                是否当前分类：${category.defaultCheck?string('true','false')}
+                子分类地址：${category.contentPath!}
+                子分类ID：${category.id!}
+                《br/》
+            《/#list》
+            《/#if》
+            《/@_d_child_category》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_attach</name>
+        <example>
+            《@_d_attach contentId=contentId hasFiles=hasFiles》
+            《#if attachs?? &amp;&amp; (attachs?size>0)》
+                《#list attachs as attach》
+                附件名称：${attach.fileName!}
+                附件地址：${attach.fileFullPath!}
+                附件资源ID：${attach.sysResourceId!}
+                附件ID：${attach.id!}
+                附件所属内容ID：${attach.contentId!}
+                《/#list》
+            《/#if》
+            《/@_d_attach》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_content_tags</name>
+        <example>
+            《@_d_content_tags contentId=contentId  hasTag=hasTag 》
+            《#if tags?? &amp;&amp; (tags?size>0)》
+                《#list tags as tag》
+                    标签ID：${tag.id!}
+                    标签名称：${tag.name!}
+                《/#list》
+            《/#if》
+            《/@_d_content_tags》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_site</name>
+        <example>
+            《@_d_site》
+            站点名称：${siteName!}
+            站点关键字：${siteKeyWords!}
+            站点描述：${siteDesc!}
+            站点LOGO：${siteLogo!}
+            第三方统计代码：${statisticalCode!}
+            第三方分享代码：${shareCode!}
+            第三方评论代码：${commentCode!}
+            站点域名：${domain!}
+            《/@_d_site》
+        </example>
+    </direct>
+
+
+    <direct>
+        <name>_d_related</name>
+        <example>
+            《@_d_related contentId=contentId rowNum=10 hasRelated=hasRelated》
+                《#list relateds as related》
+                    推荐文章访问地址：${(related.url)!}
+                    推荐文章封面：${(related.cover)!}
+                    推荐文章ID：${(related.id)!}
+                    推荐文章标题：${(related.title)!}
+                    推荐文章描述：${(related.description)!}
+                《/#list》
+            《/@_d_related》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_content_pre</name>
+        <example>
+            《@_d_content_pre contentId=contentId categoryId=categoryId》
+            《#if previous??》
+                    标题：${previous.title!}
+                    文章地址：${previous.url!}
+                    文章内容：${previous.text!}
+                    发布日期：${(previous.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                    文章简介：${previous.description!}
+                    分类ID：${previous.categoryId!}
+                    分类名称：${previous.categoryName!}
+                    分类编码：${previous.categoryCode!}
+                    分类URL：${previous.categoryUrl!}
+                    作者：${previous.author!}
+                    编辑：${previous.editor!}
+                    是否转载：${previous.copied?string('true','false')}
+                    是否含附件：${previous.hasFiles?string('true','false')}
+                    是否静态化：${previous.hasStatic?string('true','false')}
+                    是否含推荐：${previous.hasRelated?string('true','false')}
+                    文章封面地址：${previous.cover!}
+                    点击次数：${previous.clicks!}
+                    点赞次数：${previous.giveLikes!}
+            《/#if》
+            《/@_d_content_pre》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_content_next</name>
+        <example>
+            《@_d_content_next contentId=contentId categoryId=categoryId》
+            《#if next??》
+            标题：${title!}
+            文章地址：${url!}
+            文章内容：${text!}
+            发布日期：${(publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+            文章简介：${description!}
+            分类ID：${categoryId!}
+            分类名称：${categoryName!}
+            分类编码：${categoryCode!}
+            分类URL：${categoryUrl!}
+            作者：${author!}
+            编辑：${editor!}
+            是否转载：${copied?string('true','false')}
+            是否含附件：${hasFiles?string('true','false')}
+            是否静态化：${hasStatic?string('true','false')}
+            是否含推荐：${hasRelated?string('true','false')}
+            文章封面地址：${cover!}
+            点击次数：${clicks!}
+            点赞次数：${giveLikes!}
+            《/#if》
+            《/@_d_content_next》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_clicks_top</name>
+        <example>
+            《@_d_clicks_top rowNum=8 categoryId=categoryId》
+            《#if tops?? &amp;&amp; (tops?size>0)》
+            《#list tops as top》
+                标题：${top.title!}
+                文章地址：${top.url!}
+                发布日期：${(top.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                点击次数：${top.clicks!}
+                点赞次数：${top.giveLikes!}
+                文章简介：${top.description!}
+                作者：${top.author!}
+                编辑：${top.editor!}
+                封面：${top.cover!}
+            《/#list》
+            《/#if》
+            《/@_d_clicks_top》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_recomms</name>
+        <example>
+            《@_d_recomms rowNum=8 categoryId=categoryId》
+            《#if recomms?? &amp;&amp; (recomms?size>0) 》
+            《#list recomms as recomm》
+                标题：${recomm.title!}
+                文章地址：${recomm.url!}
+                发布日期：${(recomm.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                点击次数：${recomm.clicks!}
+                点赞次数：${recomm.giveLikes!}
+                文章简介：${recomm.description!}
+                作者：${recomm.author!}
+                编辑：${recomm.editor!}
+                封面：${recomm.cover!}
+                分类ID：${recomm.categoryId!}
+                分类名称：${recomm.categoryName!}
+                分类编码：${recomm.categoryCode!}
+                分类URL：${recomm.categoryUrl!}
+            《/#list》
+            《/#if》
+            《/@_d_recomms》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_hots</name>
+        <example>
+            《@_d_hots rowNum=8 categoryId=categoryId》
+            《#if hots??  &amp;&amp; (hots?size>0) 》
+            《#list  hots as hot》
+                标题：${hot.title!}
+                文章地址：${hot.url!}
+                发布日期：${(hot.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                点击次数：${hot.clicks!}
+                点赞次数：${hot.giveLikes!}
+                文章简介：${hot.description!}
+                作者：${hot.author!}
+                编辑：${hot.editor!}
+                封面：${hot.cover!}
+                分类ID：${hot.categoryId!}
+                分类名称：${hot.categoryName!}
+                分类编码：${hot.categoryCode!}
+                分类URL：${hot.categoryUrl!}
+            《/#list》
+            《/#if》
+            《/@_d_hots》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_notices</name>
+        <example>
+            《@_d_notices rowNum=8 categoryId=categoryId》
+            《#if notices?? &amp;&amp; (notices?size>0) 》
+            《#list  notices as notice》
+                标题：    ${notice.title!}
+                文章地址：${notice.url!}
+                发布日期：${(notice.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+                点击次数：${notice.clicks!}
+                点赞次数：${notice.giveLikes!}
+                文章简介：${notice.description!}
+                作者：    ${notice.author!}
+                编辑：    ${notice.editor!}
+                封面：    ${notice.cover!}
+                分类ID：  ${notice.categoryId!}
+                分类名称：${notice.categoryName!}
+                分类编码：${notice.categoryCode!}
+                分类URL： ${notice.categoryUrl!}
+            《/#list》
+            《/#if》
+            《/@_d_notices》
+        </example>
+    </direct>
+
+    <direct>
+        <name>_d_uptodates</name>
+        <example>
+            《@_d_uptodates rowNum=8 categoryId=categoryId》
+            《#if contents?? &amp;&amp; (contents?size>0) 》
+            《#list  contents as content》
+            标题：    ${content.title!}
+            文章地址：${content.url!}
+            发布日期：${(content.publishDate?string('YY-MM-dd'))!'${.now?string("YY-MM-dd")}'}
+            点击次数：${content.clicks!}
+            点赞次数：${content.giveLikes!}
+            文章简介：${content.description!}
+            作者：    ${content.author!}
+            编辑：    ${content.editor!}
+            封面：    ${content.cover!}
+            分类ID：  ${content.categoryId!}
+            分类名称：${content.categoryName!}
+            分类编码：${content.categoryCode!}
+            分类URL： ${content.categoryUrl!}
+            《/#list》
+            《/#if》
+            《/@_d_uptodates》
+        </example>
+    </direct>
+
+
+
+    <direct>
+        <name>_d_fragment_data</name>
+        <example>
+            《@_d_fragment_data code='页面片段的 code'》
+            《#if fragmentData?? &amp;&amp; (fragmentData?size>0) 》
+            《#list  fragmentData as fragment》
+                标题：    ${fragment.title!}
+                地址：    ${fragment.url!}
+                排序：    ${fragment.sort!}
+                扩展字段： ${fragment.xxx!}
+            《/#list》
+            《/#if》
+            《/@_d_fragment_data》
+        </example>
+    </direct>
+
+
+</directs>

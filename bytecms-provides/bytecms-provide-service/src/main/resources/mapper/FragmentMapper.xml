@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.fragment.FragmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.fragment.Fragment">
+        <id column="id" property="id" />
+        <result column="cover" property="cover" />
+        <result column="path" property="path" />
+        <result column="title" property="title" />
+        <result column="url" property="url" />
+        <result column="sort" property="sort" />
+        <result column="create_id" property="createId" />
+        <result column="modified_id" property="modifiedId" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, cover, path, title, url, sort, create_id, modified_id, gmt_create, gmt_modified
+    </sql>
+
+    <select id="getByPk" resultType="net.bytecms.service.dto.fragment.FragmentDto">
+       SELECT fragment.path,fragment.title,fragment.url,fragment.sort,fragment.create_id,fragment.gmt_create,
+        fragment.cover,fragment.fragment_file_model_id, attribute.data AS data
+       FROM thinkcms_fragment fragment
+       LEFT JOIN thinkcms_fragment_attribute attribute ON  attribute.fragment_id=fragment.id
+       <where>
+           fragment.id=#{id}
+       </where>
+
+    </select>
+
+
+    <select id="getFragmentDataByCode" resultType="net.bytecms.service.dto.fragment.FragmentDto">
+    SELECT fragment.id,resource.file_full_path as cover,fragment.path,fragment.title,fragment.url,fragment.sort,
+    fragment.fragment_file_model_id, fragment.gmt_create,attr.`data`
+    FROM thinkcms_fragment_file_model file_model
+    LEFT JOIN thinkcms_fragment fragment  ON file_model.id=fragment.fragment_file_model_id
+    LEFT JOIN thinkcms_fragment_attribute attr ON attr.fragment_id=fragment.id
+    LEFT JOIN sys_resource resource ON resource.id=fragment.cover
+    WHERE file_model.`code`=#{code}
+    ORDER BY fragment.sort DESC
+    </select>
+
+</mapper>

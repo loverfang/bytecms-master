@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.model.CmsModelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.model.CmsModel">
+        <id column="id" property="id" />
+        <result column="parent_id" property="parentId" />
+        <result column="name" property="name" />
+        <result column="template_path" property="templatePath" />
+        <result column="has_child" property="hasChild" />
+        <result column="has_images" property="hasImages" />
+        <result column="has_files" property="hasFiles" />
+        <result column="is_url" property="isUrl" />
+        <result column="default_field_list" property="defaultFieldList" />
+        <result column="extend_field_list" property="extendFieldList" />
+        <result column="required_field_list" property="requiredFieldList" />
+        <result column="field_text_map" property="fieldTextMap" />
+        <result column="create_id" property="createId" />
+        <result column="modified_id" property="modifiedId" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_id, name, template_path, has_child, has_images, has_files, is_url, default_field_list, extend_field_list, required_field_list, field_text_map, create_id, modified_id, gmt_create, gmt_modified
+    </sql>
+    <select id="listModelByCategory" resultType="net.bytecms.service.dto.model.CmsModelDto">
+        SELECT model.id,model.name,
+        IFNULL(catemodel.template_path,model.template_path) AS template_path
+         FROM thinkcms_model model LEFT JOIN thinkcms_category_model catemodel ON model.id = catemodel.model_id AND
+         catemodel.category_id=#{dto.categoryId}
+    </select>
+
+</mapper>

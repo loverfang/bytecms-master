@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.system.mapper.system.OrgMapper">
+	
+	<delete id="deleteByOrgCode" parameterType="java.lang.String">
+		DELETE FROM sys_org WHERE org_code = #{code, jdbcType=CHAR}
+	</delete>
+
+	<select id="getOrgsByUserId"  resultType="net.bytecms.system.dto.system.OrgDto">
+		select
+		 id,
+		 org_name as orgName,
+		 org_code as orgCode ,
+		 parent_id as parentId ,
+		 parent_code as parentCode,
+		`level` as level
+		 from sys_org WHERE org_code like  CONCAT('%', #{orgCode},'%')
+	</select>
+
+
+	<select id="listUserIdsByOrgAndRole" resultType="java.lang.String">
+		select su.id from sys_user su inner JOIN sys_user_role sur on su.id=sur.user_id inner JOIN sys_role sr on sr.id=sur.role_id
+        where sr.role_code=#{roleCode}
+        and su.org_id in
+		<foreach collection="orgIds" item="id" index="index" open="(" close=")" separator=",">
+			#{id}
+		</foreach>
+	</select>
+
+</mapper>

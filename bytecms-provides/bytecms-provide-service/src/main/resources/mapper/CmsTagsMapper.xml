@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.bytecms.service.mapper.tags.CmsTagsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="net.bytecms.service.entity.tags.CmsTags">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="type_id" property="typeId" />
+        <result column="create_id" property="createId" />
+        <result column="modified_id" property="modifiedId" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, type_id, create_id, modified_id, gmt_create, gmt_modified
+    </sql>
+    <select id="getTagsByContentId" resultType="string">
+        SELECT tag_ids FROM thinkcms_content WHERE id = #{contentId}
+    </select>
+
+
+    <select id="listTags" resultType="net.bytecms.service.dto.tags.CmsTagsDto">
+        SELECT tag.*,IFNULL(tag_.use_count,0) AS use_count FROM thinkcms_tag tag
+
+        LEFT JOIN (
+
+        SELECT r.tag_id, IFNULL(count(r.tag_id),0) AS use_count  FROM (
+
+        SELECT content.id, substring_index(substring_index(content.tag_ids,',', b.help_topic_id + 1), ',', -1) AS tag_id
+
+        FROM thinkcms_content content JOIN mysql.help_topic b ON b.help_topic_id &lt;  (LENGTH(content.tag_ids) - LENGTH(REPLACE(content.tag_ids, ',', '')) + 1)
+
+        WHERE content.tag_ids IS NOT NULL AND content.tag_ids!=''
+
+        ) r GROUP BY r.tag_id
+
+        ) tag_
+
+        ON tag.id = tag_.tag_id
+
+        ORDER BY use_count DESC
+
+            <if test="maxRowNum!=null">
+                LIMIT #{maxRowNum}
+            </if>
+    </select>
+
+    <select id="getTagsByContent" resultType="net.bytecms.service.dto.tags.CmsTagsDto">
+        SELECT tag.id,tag.`name`,r.id AS contentId FROM (
+        SELECT content.id , substring_index(substring_index(content.tag_ids,',', b.help_topic_id + 1), ',', -1) AS tag_id
+        FROM thinkcms_content content JOIN mysql.help_topic b ON b.help_topic_id &lt;  (LENGTH(content.tag_ids) - LENGTH(REPLACE(content.tag_ids, ',', '')) + 1)
+        WHERE content.tag_ids IS NOT NULL AND content.tag_ids!='' and content.id = #{contentId}
+        ) r
+        INNER JOIN thinkcms_tag tag ON tag.id =  r.tag_id
+
+    </select>
+
+    <select id="listPage" resultType="net.bytecms.service.dto.tags.CmsTagsDto">
+    SELECT tag.*,type.`name` AS typeName FROM thinkcms_tag tag LEFT JOIN thinkcms_tag_type type ON tag.type_id=type.id
+    <where>
+        <if test="dto.name!=null and dto.name!='' ">
+            tag.`name` like concat('%',#{dto.name},'%')
+        </if>
+
+        <if test="dto.typeId!=null and dto.typeId!='' ">
+           AND tag.type_id = #{dto.typeId}
+        </if>
+
+    </where>
+    </select>
+
+</mapper>
