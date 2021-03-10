@@ -42,6 +42,49 @@
             return !father[parentId] || father[parentId] == '0' ||  father[parentId] == null ;
         });
     }
+    function transTree(data) {
+        let result = []
+        let map = {}
+        if (!Array.isArray(data)) { //验证data是不是数组类型
+            return []
+        }
+        data.forEach(item => {//建立每个数组元素id和该对象的关系
+            map[item.id] = item //这里可以理解为浅拷贝，共享引用
+        })
+        data.forEach(item => {
+            let parent = map[item.parentId] //找到data中每一项item的爸爸
+            if (parent) {//说明元素有爸爸，把元素放在爸爸的children下面
+                (parent.children || (parent.children = [])).push(item)
+            } else {//说明元素没有爸爸，是根节点，把节点push到最终结果中
+                result.push(item) //item是对象的引用
+            }
+        })
+        return result //数组里的对象和data是共享的
+    }
+    //console.log(JSON.stringify(transTree(data)))
+
+    function transArr(node) {
+        let queue= [node]
+        let data = [] //返回的数组结构
+        while (queue.length !== 0) { //当队列为空时就跳出循环
+            let item = queue.shift() //取出队列中第一个元素
+            // data.push({
+            //     id: item.id,
+            //     parentId: item.parentId,
+            //     name: item.name
+            // })
+            data.push(item)
+            let children = item.children // 取出该节点的孩子
+            if (children) {
+                for (let i = 0; i < children.length; i++) {
+                    queue.push(children[i]) //将子节点加入到队列尾部
+                }
+            }
+        }
+        return data
+    }
+    //console.log(transArr(node))
+
     //验证是否为子集
     function childValidate(sourceList, id, parentId, key, parentKey) {
         var data = sourceList.find(function (x) {
@@ -341,6 +384,8 @@
     var util = {
         getParameter: getParameter,
         treeData:treeData,
+        transArr:transArr,
+        transTree:transTree,
         childValidate:childValidate,
         moneyFormatter:moneyFormatter,
         date: date,

@@ -54,7 +54,7 @@
 
             const token = localStorage.getItem('X-Token');
             if (token) {
-                config.headers['Authorization'] = 'Bearer  ' + token // 让每个请求携带自定义 token 请根据实际情况自行修改
+                config.headers['Authorization'] = 'bearer  ' + token // 让每个请求携带自定义 token 请根据实际情况自行修改
             }
             return config
         },
@@ -69,7 +69,7 @@
     axios.interceptors.response.use(
         function(response) {
             //登录失效
-            if (response.data.bizCode == "401" && ms.isLoginRedirect) {
+            if (response.data.code == "401" && ms.isLoginRedirect) {
                 window.parent.location.href = ms.base + "/" + ms.login + "?backurl=" + encodeURIComponent(window.parent.location.href);
                 return;
             }

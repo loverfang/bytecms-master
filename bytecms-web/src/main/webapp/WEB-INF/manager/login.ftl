@@ -179,6 +179,7 @@
                                 // that.rememberPass?localStorage.setItem("managerName",that.form.managerName):localStorage.setItem('name',"");
                                 // that.rememberPass?localStorage.setItem('managerPassword',that.form.managerPassword):localStorage.setItem('managerPassword',"");
                                 localStorage.setItem("X-Token", result.res.access_token);
+                                localStorage.setItem("oauthInfo", result.res);
                                 // 进入到首页
                                 location.href= ms.manager + "/page/index";
                             }else {

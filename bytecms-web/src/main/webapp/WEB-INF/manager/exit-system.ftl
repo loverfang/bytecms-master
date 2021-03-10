@@ -17,9 +17,10 @@
         methods: {
             loginOut: function () {
                 var that = this;
-                ms.http.get(ms.manager + "/loginOut.do").then(function (data) {
+                debugger;
+                ms.http.get(ms.manager + "/auth/logout").then(function (data) {
                     isShow = false;
-                    location.href = ms.manager + "/login.do";
+                    location.href = ms.manager + "/oauth/login";
                 }, function (err) {
                     that.$message.error(data.msg);
                 });

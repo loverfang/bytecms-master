@@ -4,8 +4,7 @@
   <title>后台主界面</title>
   <meta http-equiv="content-type" content="text/html" />
   <META HTTP-EQUIV="Pragma" CONTENT="no-cache" />
-  <meta name="viewport"
-        content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
+  <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,width=device-width"/>
   <meta name="format-detection" content="telephone=no"/>
   <meta name="app-mobile-web-app-capable" content="yes"/>
   <meta name="app-mobile-web-app-status-bar-style" content="black-translucent"/>

@@ -6,14 +6,6 @@
     <#include '/include/head-file.ftl'/>
     <script src="${base}/static/plugins/sockjs/1.4.0/sockjs.min.js"></script>
     <script src="${base}/static/plugins/stomp/2.3.3/stomp.min.js"></script>
-    <!-- 此部分是铭飞平台MStroe的客户端（MStore不在铭飞开源产品范围），如果不需要使用MStore可以删除掉 -->
-    <script src="https://cdn.mingsoft.net/platform/ms-store.umd.min.js"></script>
-    <style>
-        .to-ele {
-            font-size: 18px;
-            margin: -2px 9px 0px 3px
-        }
-    </style>
 </head>
 <body>
 <#include "/reset-password.ftl"/>
@@ -33,16 +25,19 @@
                             5.2.0
                         </div>
                     </div>
+
                     <el-submenu :popper-class="['ms-admin-menu-aside-submenu',theme]" :index="menu.id+''"
                                 :data-index="menu.id+''" v-for="(menu,i) in asideMenuList" :key='i'>
                         <template slot="title">
-                            <i class='ms-admin-icon iconfont' :class="menu.modelIcon"></i>
-                            <span>{{menu.modelTitle}}</span>
+                            <!-- 菜单图标 -->
+                            <i class='ms-admin-icon icon iconfont' :class="menu.attributes.icon"></i>
+                            <span>{{menu.name}}</span>
                         </template>
+
                         <!-- 子菜单 -->
                         <el-menu-item :index="sub.id+''" :data-index="sub.id"
                                       v-for="(sub,index) in getSubMenu(menu.id)"
-                                      :key='sub.modelId' v-text="sub.modelTitle"
+                                      :key='sub.id' v-text="sub.name"
                                       @click.self='open(sub)'></el-menu-item>
                     </el-submenu>
                     <!-- 收缩按钮 -->
@@ -71,18 +66,13 @@
                             <li class="ms-admin-header-menu-all-item" v-for="(item,index) of parentMenuList"
                                 :key='index' @click='openMenu(item,index)'>
                                 <i class="iconfont" :class="item.modelIcon" style="padding-right: 4px"></i>
-                                <div style="width:80px">{{item.modelTitle}}</div>
+                                <div style="width:80px">{{item.name}}</div>
                                 <div style="float: right;width: 18px;">
                                     <template>
-                                        <i v-if="markList.find(function(x) {
-                    return x.title == item.modelTitle
-                })!=undefined" @click="cancelMarkMenu(item.modelTitle)"
-                                           class='el-icon-star-on'></i>
-                                        <i v-else class='el-icon-star-off '
-                                           @click="markMenu(item.modelTitle,item.modelIcon)"></i>
+                                        <i v-if="markList.find(function(x) { return x.title == item.name })!=undefined" @click="cancelMarkMenu(item.name)" class='el-icon-star-on'></i>
+                                        <i v-else class='el-icon-star-off ' @click="markMenu(item.name, item.modelIcon)"></i>
                                     </template>
                                 </div>
-
                             </li>
                         </div>
                     </el-submenu>
@@ -145,15 +135,21 @@
             <!--内容-->
             <el-main class="ms-admin-main">
                 <!--选项卡-->
-                <el-tabs class="ms-admin-tabs" v-model="currentTab" type="card" closable @tab-remove="closeTab"
-                         @tab-click='tabClick'>
-                    <el-tab-pane v-for="(item, index) in editableTabs" :key="index" :label="item.modelTitle"
-                                 :name="item.modelTitle"
-                                 :data-id='item.id' :data-modelId='item.modelId'>
+                <el-tabs class="ms-admin-tabs" v-model="currentTab" type="card" closable @tab-remove="closeTab" @tab-click='tabClick'>
+
+                    <el-tab-pane v-for="(item, index) in editableTabs"
+                         :key="index"
+                         :label="item.name"
+                         :name="item.name"
+                         :data-id='item.id'
+                         :data-modelId='item.id'>
+
                         <keep-alive>
-                            <iframe :src='item.isStore?item.modelUrl:ms.manager+"/"+item.modelUrl+(item.modelUrl.indexOf("?")==-1?"?":"&")+"id="+item.id+"&modelCode="+item.modelCode+"&modelTitle="+encodeURI(item.modelTitle)'
-                                    :ref="item.modelTitle"></iframe>
+<#--                        <iframe :src='item.isStore?item.modelUrl:ms.manager+"/"+item.modelUrl+(item.modelUrl.indexOf("?")==-1?"?":"&")+"id="+item.id+"&modelCode="+item.modelCode+"&modelTitle="+encodeURI(item.name)'-->
+<#--                                :ref="item.name"></iframe>-->
+                            <iframe :src='ms.manager+"/"+item.url+(item.url.indexOf("?")==-1?"?":"&")+"id="+item.id+"&name="+encodeURI(item.name)' :ref="item.name"></iframe>
                         </keep-alive>
+
                     </el-tab-pane>
                 </el-tabs>
             </el-main>
@@ -194,23 +190,26 @@
             headMenuActive: '', //头部菜单激活
             editableTabsValue: '',
             messageTypeList: [],
-            editableTabs: [{"modelTitle": "工作台", "modelUrl": "main.do"}], //当前打开的tab页面
+            editableTabs: [{"name": "工作台", "url": "manage/main"}], //当前打开的tab页面
             shortcutMenu: false, //快捷菜单显示状态
             collapseMenu: false, //菜单折叠，false不折叠
             currentTab: '工作台', //当前激活tab的name
             tabIndex: 1,
-            markList: [
-                {title: "权限管理", icon: "icon-wode", hide: true},
-                {title: "系统设置", icon: "icon-xitongguanli", hide: true},
-                {title: "内容管理", icon: "icon-neirongguanli", hide: true},
-                {title: "会员中心", icon: "icon-huiyuanzhongxin", hide: true},
-                {title: "自定义管理", icon: "icon-zidingyiguanli", hide: true},
+
+            markList: [  //左侧初始化显示一些菜单
+                {title: "系统管理", icon: "icon-wode", hide: true},
+                {title: "内容管理", icon: "icon-xitongguanli", hide: true},
+                {title: "栏目管理", icon: "icon-neirongguanli", hide: true},
+                {title: "配置管理", icon: "icon-huiyuanzhongxin", hide: true},
+                {title: "标签管理", icon: "icon-zidingyiguanli", hide: true},
             ],
+
             //登录用户信息
             peopleInfo: {
                 managerName: '', //账号
                 managerNickName: '',
             },
+
             mstore: {},
             theme: 'ms-theme-light',
             callbackFun: {},
@@ -226,7 +225,6 @@
                         return dict.dictLabel;
                     }
                     return '';
-
                 }
             }
         },
@@ -234,21 +232,27 @@
             menuList: function (n, o) {
                 var that = this;
                 n && n.forEach(function (item, index) {
-                    item.modelId ? that.subMenuList.push(item) : that.parentMenuList.push(item)
+                    if(item.id != -1){
+                        item.hasParent ? that.subMenuList.push(item) : that.parentMenuList.push(item)
+                    }
                 })
+                console.log(that.parentMenuList)
             },
+
             parentMenuList: function (n, o) {
                 var that = this
                 this.mainParentMenuList = n.slice(0, 5);
                 this.asideMenuList = n.filter(function (f) {
                     return that.markList.find(
                         function (x) {
-                            return x.title == f['modelTitle']
+                            return x.title == f['name']
                         }) != undefined
                 })
             },
+
             editableTabs: {
                 handler: function (n, o) {
+                    debugger;
                     if (n.length) {
                         var that = this;
                         if (!document.querySelector('.el-icon-refresh')) {
@@ -263,7 +267,6 @@
                                 if(that.$refs[Object.keys(that.$refs)[index]][0].contentDocument!=null) {
                                     that.$refs[Object.keys(that.$refs)[index]][0].contentDocument.location.reload(true)
                                 }
-
                             })
                             document.querySelector('.el-tabs__header').insertBefore(i, document.querySelector('.el-tabs__nav-wrap'))
                         }
@@ -286,7 +289,6 @@
             getAuthorization: function () {
 
             },
-
             markMenu: function (title, icon) {
                 var menu = {
                     title: title,
@@ -313,38 +315,49 @@
             // 菜单列表
             list: function () {
                 var that = this;
-                ms.http.get(ms.manager + "/model/list.do")
-                    .then(function (data) {
-                        that.menuList = data.data.rows
-                    }, function (err) {
-                        that.$message.error(err);
-                    })
+                ms.http.get(ms.manager + "/menu/selectTreeList").then(function (data) {
+                    // 后台返回的是一棵带根的树形菜单,我们需要把它转换成一个list
+                    that.menuList = ms.util.transArr(data.res);
+                }, function (err) {
+                    that.$message.error(err);
+                })
             },
-            asideMenuOpen: function (index, indexPath) {
-            },
+
+            asideMenuOpen: function (index, indexPath) { },
+
             // 菜单打开页面
             open: function (sub) {
                 var that = this
                 var result = '';
+
                 result = this.editableTabs.some(function (item, index) {
-                    return item.modelTitle == sub.modelTitle
+                    return item.name == sub.name
                 })
 
-                if (sub.syncStoreUrl) {
-                    //sub.modelUrl = "http://store.web.i.mingsoft.net/#/?client=localhost:8080//ms";
-                    sub.modelUrl = sub.syncStoreUrl;
-                    sub.modelTitle = 'mstore';
-                    sub.isStore = true;
-                    !result ? this.editableTabs.push(sub) : ""
-                } else {
-                    !result ? this.editableTabs.push(sub) : ""
-                }
+                // if (sub.syncStoreUrl) {
+                //     sub.modelUrl = sub.syncStoreUrl;
+                //     sub.name = 'mstore';
+                //     sub.isStore = true;
+                //     !result ? this.editableTabs.push(sub) : ""
+                // } else {
+                //     !result ? this.editableTabs.push(sub) : ""
+                // }
 
-                this.currentTab = sub.modelTitle;
-                this.headMenuActive = sub.modelId
+                var menu = {};
+                    menu.id = sub.id;
+                    menu.name = sub.name;
+                    menu.icon = sub.attributes.icon;
+                    menu.url = sub.attributes.url;
+                    menu.perms = sub.perms;
+
+                !result ? this.editableTabs.push(menu) : ""
+
+                this.currentTab = sub.name;
+                this.headMenuActive = sub.id
                 this.$nextTick(function () {
                     that.asideMenuActive = sub.id;
                 })
+
                 // 处理其他逻辑
                 setTimeout(function () {
                     if (document.querySelector('.el-tabs__nav-prev')) {
@@ -354,41 +367,45 @@
                     }
                 }, 16)
             },
+
             tabClick: function (tab) {
                 this.asideMenuActive = tab.$el.dataset.id
-                this.headMenuActive = tab.$el.dataset.modelId
+                this.headMenuActive = tab.$el.dataset.id
                 console.log(this.editableTabs)
             },
+
             // 获取当前菜单的子菜单
             getSubMenu: function (id) {
                 var result = [];
                 var that = this;
                 that.subMenuList && that.subMenuList.forEach(function (item) {
-                    item.modelId == id ? result.push(item) : ''
+                    item.parentId == id ? result.push(item) : ''
                 })
                 return result;
             },
-            //关闭tab标签页
+
+            // 关闭tab标签页
             closeTab: function (targetName) {
                 var that = this;
                 // 关闭的面板是当前激活面板
                 if (that.currentTab == targetName) {
                     var modelId = null
                     that.editableTabs.forEach(function (tab, index, arr) {
-                        if (tab.modelTitle == targetName) {
+                        if (tab.name == targetName) {
                             modelId = arr[index].modelId
                             var nextTab = arr[index + 1] || arr[index - 1];
                             if (nextTab) {
-                                that.currentTab = nextTab.modelTitle
+                                that.currentTab = nextTab.name
                                 that.asideMenuActive = nextTab.id
                                 that.headMenuActive = nextTab.modelId
                             }
                         }
                     })
                 }
+
                 // 去掉关闭的tab
                 that.editableTabs = that.editableTabs.filter(function (tab) {
-                    return tab.modelTitle !== targetName
+                    return tab.name !== targetName
                 })
 
                 // 关闭左侧父菜单
@@ -401,7 +418,7 @@
                             if (menu.id == modelId) {
                                 var flag = false;
                                 that.markList.forEach(function (item, index, array) {
-                                    if (item.title == menu.modelTitle) {
+                                    if (item.title == menu.name) {
                                         flag = true;
                                     }
                                 })
@@ -424,25 +441,27 @@
                     }
                 }, 16)
             },
+
             openParentMenuInTitle: function (title) {
                 var data = this.parentMenuList.find(function (menu) {
-                    return menu.modelTitle == title
+                    return menu.name == title
                 })
                 data && this.openMenu(data)
             },
+
             // 头部导航打开菜单
             openMenu: function (menu, index) {
                 this.asideMenuList.some(function (item, index) {
                     return item.id == menu.id
                 }) || this.asideMenuList.push(menu)
-                // this.getSubMenu(menu.id)[0] && this.$refs.menu.open(this.getSubMenu(menu.id)[0].modelTitle);
+                // this.getSubMenu(menu.id)[0] && this.$refs.menu.open(this.getSubMenu(menu.id)[0].name);
                 var children = [];
                 this.menuList.forEach(function (tab) {
                     if (tab.modelId == menu.id) {
                         children.push(tab)
                     }
                 })
-                this.currentTab = children[0] && children[0].modelTitle;
+                this.currentTab = children[0] && children[0].name;
                 this.open(children[0]);
                 var that = this;
                 setTimeout(function () {
@@ -452,16 +471,18 @@
                     that.$refs.menu.open(String(menu.id))
                 })
             },
+
+            // 获取用户信息
             managerGet: function () {
                 var that = this;
-                ms.http.get(ms.manager + "/basic/manager/get.do")
-                    .then(function (data) {
-                        that.peopleInfo = data.data
-                        resetPasswordVue.resetPasswordForm.managerName = that.peopleInfo.managerName
-                    }, function (err) {
-                        that.$message.error(err);
-                    })
+                // 直接从localStore中取出认证信息，为了进度先跑起来，直接写死
+                var authUserInfo = {};
+                // 账号
+                authUserInfo.managerName= 'manager';
+                authUserInfo.managerNickName= '测试管理员';
+                that.peopleInfo = authUserInfo
             },
+
             exitSystem: function () {
                 this.$confirm('是否确认退出账号？', '退出系统', {
                     confirmButtonText: '确定',
@@ -470,16 +491,16 @@
                     confirmButtonClass: 'el-button--mini',
                     type: 'warning'
                 }).then(function () {
-                    ms.http.get(ms.manager + "/loginOut.do")
+                    ms.http.get(ms.manager + "/oauth/logout")
                         .then(function (data) {
                             isShow = false;
-                            location.href = ms.manager + "/login.do";
+                            location.href = ms.manager + "/oauth/login";
                         }, function (err) {
                             that.$message.error(err.msg);
                         })
                 })
             },
-            //  打开修改密码，退出的模态框
+            // 打开修改密码，退出的模态框
             openModal: function () {
                 event.target.innerText.indexOf('修改密码') > -1 ?
                     resetPasswordVue.isShow = true : this.exitSystem();
@@ -488,13 +509,13 @@
             formmateIcon: function (icon) {
                 return "<i class='ms-admin-icon iconfont'></i>"
             },
-            //打开指定标题
+            // 打开指定标题
             openMenuInTitle: function (title) {
                 this.open(this.menuList.find(function (x) {
-                    return x.modelTitle == title
+                    return x.name == title
                 }))
             },
-            //消息显示
+            // 消息显示
             getMessage: function () {
                 var that = this
                 ms.http.post(ms.manager + "/message/myMessage/list.do", {pageSize: 9999, mlStatus: 'unread'})
@@ -508,6 +529,7 @@
                     })
 
             },
+
             dictList: function () {
                 var that = this;
                 ms.http.get(ms.base + '/mdiy/dict/list.do', {dictType: '消息类型', pageSize: 99999}).then(function (res) {
@@ -519,34 +541,43 @@
                     console.log(err);
                 });
             },
+
             addCallBackFun: function (fun) {
                 this.callbackFun = fun;
             }
         },
+
+        //不能获得dom，可获得数据和方法
         created: function () {
-            this.getAuthorization();
+            // 目前为空
+            // this.getAuthorization();
             var markList = localStorage.getItem("markList");
             if (markList) {
                 this.markList = JSON.parse(markList)
             }
             localStorage.setItem("markList", JSON.stringify(this.markList))
         },
+
+        //能获得dom,可获得数据,方法
         mounted: function () {
             // this.getMessage();
-            this.dictList();
+            // this.dictList();
+            // 主题信息
             if (localStorage.getItem("theme")) {
                 this.theme = localStorage.getItem("theme");
+                console.log( this.theme )
             }
+
             //setInterval(this.getMessage,3000)
             // 菜单列表
             this.list();
-            //获取登录用户信息
+            // 获取登录用户信息
             this.managerGet();
         },
     })
 </script>
-<style>
 
+<style>
     .ms-admin-logo {
         display: flex;
         align-items: center;
@@ -577,7 +608,6 @@
         margin-right: 20px;
         cursor: pointer;
     }
-
 
     .ms-admin-header-right {
         margin-left: auto;
@@ -631,13 +661,9 @@
         overflow: visible;
     }
 
-
     .ms-admin-menu-aside .ms-admin-menu .el-menu--inline .is-active {
         border-left: 2px solid #0099ff;
     }
-
-
-
 
     .ms-admin-menu-aside .ms-menu-expand i {
         font-weight: bolder;
@@ -659,8 +685,6 @@
         width: 30px;
     }
 
-
-
     .ms-admin-menu-aside .el-submenu__title,
     .ms-admin-menu-aside .el-menu-item {
         color: rgba(255, 255, 255, 1);
@@ -679,7 +703,6 @@
     .ms-admin-menu-aside .el-submenu.is-active .el-submenu__title {
         color: rgba(255, 255, 255, 1) !important;
     }
-
 
     .ms-admin-header {
         display: flex;
@@ -702,8 +725,6 @@
         font-size: 1em;
     }
 
-
-
     .ms-admin-header .ms-admin-header-menu .ms-admin-shortcut-menu > li {
         margin: 0;
         padding: 0 20px;
@@ -722,8 +743,6 @@
         color: #0099ff;
     }
 
-
-
     .ms-admin-header-menu .el-submenu__title {
         height: 50px !important;
         line-height: 50px !important;
@@ -731,7 +750,6 @@
         align-items: center;
 
     }
-
 
     .ms-admin-header-menu .el-submenu__title:hover {
         background-color: #F2F6FC !important;
@@ -754,7 +772,6 @@
     .ms-admin-header-menu-item .el-menu-item:hover i {
         color: #409EFF !important;
     }
-
 
     .ms-admin-header-menu-all {
         width: 560px;
@@ -801,7 +818,6 @@
     .ms-admin-header-menu-all .ms-admin-header-menu-all-item:hover {
         color: rgba(64, 158, 255, 1);
     }
-
 
     .ms-admin-menu-aside-submenu .el-menu-item {
         line-height: 40px;
