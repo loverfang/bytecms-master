@@ -190,7 +190,7 @@
             headMenuActive: '', //头部菜单激活
             editableTabsValue: '',
             messageTypeList: [],
-            editableTabs: [{"name": "工作台", "url": "manage/main"}], //当前打开的tab页面
+            editableTabs: [{"name": "工作台", "url": "page/dashboard"}], //当前打开的tab页面
             shortcutMenu: false, //快捷菜单显示状态
             collapseMenu: false, //菜单折叠，false不折叠
             currentTab: '工作台', //当前激活tab的name
@@ -252,7 +252,6 @@
 
             editableTabs: {
                 handler: function (n, o) {
-                    debugger;
                     if (n.length) {
                         var that = this;
                         if (!document.querySelector('.el-icon-refresh')) {

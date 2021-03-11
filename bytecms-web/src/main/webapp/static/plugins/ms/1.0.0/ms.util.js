@@ -33,6 +33,7 @@
      * 转化树形数据：[{id:1,titile:"标题",pid:0,children:[{id:2,titile:"标题",pid:1}]}]
      */
     function treeData(source, id, parentId, children) {
+        debugger
         var cloneData = JSON.parse(JSON.stringify(source));
         return cloneData.filter(function (father) {
             var branchArr = cloneData.filter(function (child) {

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import net.bytecms.core.annotation.DirectMark;
 import net.bytecms.core.annotation.SolrMark;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class BaseModel<M> extends Model {
      * 创建时间
      */
     @TableField(value = "gmt_create")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date gmtCreate;
 
     /**
@@ -50,6 +52,7 @@ public class BaseModel<M> extends Model {
      * 修改时间
      */
     @TableField(value = "gmt_modified")
+    @JsonFormat(locale="zh", timezone="GMT+8", pattern="yyyy-MM-dd HH:mm:ss")
     private Date gmtModified;
 
 

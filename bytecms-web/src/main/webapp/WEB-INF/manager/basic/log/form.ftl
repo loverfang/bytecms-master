@@ -11,9 +11,7 @@
 		</el-header>
 		<el-main class="ms-container">
             <el-form ref="form" :model="form" :rules="rules" label-width="120px" label-position="right" size="small">
-                        <el-row
-                                :gutter="0"
-                                justify="start" align="top">
+                        <el-row :gutter="0" justify="start" align="top">
                                 <el-col :span="12">
 
         <el-form-item  label="标题" prop="logTitle">

@@ -2,121 +2,78 @@
 <html>
 <head>
 	<title>系统日志</title>
-		<#include "../../include/head-file.ftl">
+	<#include "../../include/head-file.ftl">
 </head>
+
 <body>
 	<div id="index" class="ms-index" v-cloak>
 		<ms-search ref="search" @search="search" :condition-data="conditionList" :conditions="conditions"></ms-search>
+
 		<div class="ms-search">
 			<el-row>
 				<el-form :model="form"  ref="searchForm"  label-width="120px" size="mini">
-							<el-row>
-											<el-col :span="8">
+					<el-row>
+						<el-col :span="8">
+							<el-form-item label="标题" prop="logTitle">
+								<el-input v-model="form.logTitle" :disabled="false" :style="{width:  '100%'}" :clearable="true" placeholder="请输入标题"></el-input>
+							</el-form-item>
+						</el-col>
+						<el-col :span="8">
+							<el-form-item  label="请求地址" prop="logUrl">
+								<el-input v-model="form.logUrl" :disabled="false" :style="{width:  '100%'}" :clearable="true" placeholder="请输入请求地址"></el-input>
+							 </el-form-item>
+						</el-col>
+						<el-col :span="8">
+							<el-form-item  label="请求状态" prop="logStatus">
+								<el-select v-model="form.logStatus" :style="{width: '100%'}" :filterable="false" :disabled="false" :multiple="false" :clearable="true" placeholder="请选择请求状态">
+									<el-option v-for='item in logStatusOptions' :key="item.value" :value="item.value" :label="item.label"></el-option>
+								</el-select>
+							 </el-form-item>
+						</el-col>
+					</el-row>
 
-        <el-form-item  label="标题" prop="logTitle">
-                <el-input
-                        v-model="form.logTitle"
-                        :disabled="false"
-                          :style="{width:  '100%'}"
-                          :clearable="true"
-                        placeholder="请输入标题">
-                </el-input>
-         </el-form-item>
-											</el-col>
-											<el-col :span="8">
-
-        <el-form-item  label="请求地址" prop="logUrl">
-                <el-input
-                        v-model="form.logUrl"
-                        :disabled="false"
-                          :style="{width:  '100%'}"
-                          :clearable="true"
-                        placeholder="请输入请求地址">
-                </el-input>
-         </el-form-item>
-											</el-col>
-											<el-col :span="8">
-
-        <el-form-item  label="请求状态" prop="logStatus">
-                    <el-select  v-model="form.logStatus"
-                               :style="{width: '100%'}"
-                               :filterable="false"
-                               :disabled="false"
-                               :multiple="false" :clearable="true"
-                            placeholder="请选择请求状态">
-                        <el-option v-for='item in logStatusOptions' :key="item.value" :value="item.value"
-                                   :label="item.label"></el-option>
-                    </el-select>
-         </el-form-item>
-											</el-col>
+					<el-row>
+						<el-col :span="8">
+							<el-form-item  label="业务类型" prop="logBusinessType">
+								<el-select  v-model="form.logBusinessType" :style="{width: '100%'}" :filterable="false" :disabled="false" :multiple="false" :clearable="true" placeholder="请选择业务类型">
+									<el-option v-for='item in logBusinessTypeOptions' :key="item.value" :value="item.value" :label="item.label"></el-option>
+								</el-select>
+							 </el-form-item>
+						</el-col>
+					    <el-col :span="8">
+							<el-form-item  label="操作人员" prop="logUser">
+								<el-input v-model="form.logUser" :disabled="false" :style="{width:  '100%'}" :clearable="true" placeholder="请输入操作人员"></el-input>
+							</el-form-item>
+						</el-col>
+						<el-col :span="8">
+							<el-form-item label="创建时间" prop="createDate">
+								<el-date-picker v-model="form.createDateScope" value-format="yyyy-MM-dd HH:mm:ss" type="datetimerange" :style="{width:  '100%'}" start-placeholder="开始时间" end-placeholder="结束时间"></el-date-picker>
+							</el-form-item>
+						</el-col>
 							</el-row>
 							<el-row>
-											<el-col :span="8">
-
-        <el-form-item  label="业务类型" prop="logBusinessType">
-                    <el-select  v-model="form.logBusinessType"
-                               :style="{width: '100%'}"
-                               :filterable="false"
-                               :disabled="false"
-                               :multiple="false" :clearable="true"
-                            placeholder="请选择业务类型">
-                        <el-option v-for='item in logBusinessTypeOptions' :key="item.value" :value="item.value"
-                                   :label="item.label"></el-option>
-                    </el-select>
-         </el-form-item>
-											</el-col>
-											<el-col :span="8">
-
-        <el-form-item  label="操作人员" prop="logUser">
-                <el-input
-                        v-model="form.logUser"
-                        :disabled="false"
-                          :style="{width:  '100%'}"
-                          :clearable="true"
-                        placeholder="请输入操作人员">
-                </el-input>
-         </el-form-item>
-											</el-col>
-								<el-col :span="8">
-									<el-form-item label="创建时间" prop="createDate">
-										<el-date-picker
-												v-model="form.createDateScope"
-												value-format="yyyy-MM-dd HH:mm:ss"
-												type="datetimerange"
-												:style="{width:  '100%'}"
-												start-placeholder="开始时间"
-												end-placeholder="结束时间">
-										</el-date-picker>
-									</el-form-item>
+								<el-col push="16" :span="8" style="text-align: right;">
+									<el-button type="primary" icon="el-icon-search" size="mini" @click="currentPage=1;list()">搜索</el-button>
+									<el-button type="primary" icon="iconfont icon-shaixuan1" size="mini" @click="currentPage=1;$refs.search.open()">筛选</el-button>
+									<el-button @click="rest"  icon="el-icon-refresh" size="mini">重置</el-button>
 								</el-col>
-							</el-row>
-							<el-row>
-										<el-col push="16" :span="8" style="text-align: right;">
-											<el-button type="primary" icon="el-icon-search" size="mini" @click="currentPage=1;list()">搜索</el-button>
-											<el-button type="primary" icon="iconfont icon-shaixuan1" size="mini" @click="currentPage=1;$refs.search.open()">筛选</el-button>
-											<el-button @click="rest"  icon="el-icon-refresh" size="mini">重置</el-button>
-										</el-col>
 							</el-row>
 				</el-form>
 			</el-row>
 		</div>
+
 		<el-main class="ms-container">
 			<el-table height="calc(100vh - 68px)" v-loading="loading" ref="multipleTable" border :data="dataList" tooltip-effect="dark" @selection-change="handleSelectionChange">
 				<template slot="empty">
 					{{emptyText}}
 				</template>
 				<el-table-column type="selection" width="40"></el-table-column>
-                <el-table-column label="标题"   align="left" prop="logTitle">
-                </el-table-column>
-                <el-table-column label="请求地址"   align="left" prop="logUrl">
-                </el-table-column>
-                <el-table-column label="请求状态"   align="left" prop="logStatus" :formatter="logStatusFormat">
-                </el-table-column>
-                <el-table-column label="操作人员"   align="left" prop="logUser">
-                </el-table-column>
-				<el-table-column label="创建时间"   align="left" prop="createDate">
-				</el-table-column>
-				<el-table-column label="操作"  width="180" align="center">
+                <el-table-column label="标题" align="left" prop="logTitle"></el-table-column>
+                <el-table-column label="请求地址" align="left" prop="logUrl"></el-table-column>
+                <el-table-column label="请求状态" align="left" prop="logStatus" :formatter="logStatusFormat"></el-table-column>
+                <el-table-column label="操作人员" align="left" prop="logUser"></el-table-column>
+				<el-table-column label="创建时间" align="left" prop="createDate"></el-table-column>
+				<el-table-column label="操作" width="180" align="center">
 					<template slot-scope="scope">
 						<@shiro.hasPermission name="basic:log:view">
 						<el-link type="primary" :underline="false" @click="save(scope.row.id)">查看</el-link>
@@ -124,6 +81,7 @@
 					</template>
 				</el-table-column>
 			</el-table>
+
             <el-pagination
 					background
 					:page-sizes="[10,20,30,40,50,100]"
@@ -139,28 +97,30 @@
 	</div>
 </body>
 
+
 </html>
 <script>
 var indexVue = new Vue({
 	el: '#index',
 	data:{
 		conditionList:[
-        {action:'and', field: 'log_title', el: 'eq', model: 'logTitle', name: '标题', type: 'input'},
+         {action:'and', field: 'log_title', el: 'eq', model: 'logTitle', name: '标题', type: 'input'},
          {action:'and', field: 'log_ip', el: 'eq', model: 'logIp', name: 'IP', type: 'input'},
          {action:'and', field: 'log_method', el: 'eq', model: 'logMethod', name: '请求方法', type: 'input'},
-             {action:'and', field: 'log_request_method', el: 'eq', model: 'logRequestMethod', name: '请求方式', key: 'value', title: 'value', type: 'select', multiple: false},
+         {action:'and', field: 'log_request_method', el: 'eq', model: 'logRequestMethod', name: '请求方式', key: 'value', title: 'value', type: 'select', multiple: false},
          {action:'and', field: 'log_url', el: 'eq', model: 'logUrl', name: '请求地址', type: 'input'},
-             {action:'and', field: 'log_status', el: 'eq', model: 'logStatus', name: '请求状态', key: 'value', title: 'label', type: 'select', multiple: false},
-             {action:'and', field: 'log_business_type', el: 'eq', model: 'logBusinessType', name: '业务类型', key: 'value', title: 'label', type: 'select', multiple: false},
-             {action:'and', field: 'log_user_type', el: 'eq', model: 'logUserType', name: '用户类型', key: 'value', title: 'label', type: 'select', multiple: false},
+         {action:'and', field: 'log_status', el: 'eq', model: 'logStatus', name: '请求状态', key: 'value', title: 'label', type: 'select', multiple: false},
+         {action:'and', field: 'log_business_type', el: 'eq', model: 'logBusinessType', name: '业务类型', key: 'value', title: 'label', type: 'select', multiple: false},
+         {action:'and', field: 'log_user_type', el: 'eq', model: 'logUserType', name: '用户类型', key: 'value', title: 'label', type: 'select', multiple: false},
          {action:'and', field: 'log_user', el: 'eq', model: 'logUser', name: '操作人员', type: 'input'},
          {action:'and', field: 'log_location', el: 'eq', model: 'logLocation', name: '所在地区', type: 'input'},
          {action:'and', field: 'log_param', el: 'eq', model: 'logParam', name: '请求参数', type: 'textarea'},
          {action:'and', field: 'log_result', el: 'eq', model: 'logResult', name: '返回参数', type: 'textarea'},
          {action:'and', field: 'log_error_msg', el: 'eq', model: 'logErrorMsg', name: '错误消息', type: 'textarea'},
-          {action:'and', field: 'create_date', el: 'eq', model: 'createDate', name: '创建时间', type: 'date'},
-          {action:'and', field: 'update_date', el: 'eq', model: 'updateDate', name: '修改时间', type: 'date'},
+         {action:'and', field: 'create_date', el: 'eq', model: 'createDate', name: '创建时间', type: 'date'},
+         {action:'and', field: 'update_date', el: 'eq', model: 'updateDate', name: '修改时间', type: 'date'},
  		],
+
 		conditions:[],
 		dataList: [], //系统日志列表
 		selectionList:[],//系统日志列表选中
@@ -319,12 +279,13 @@ var indexVue = new Vue({
 			this.list();
 		},
 	},
-created:function(){
-   	if(history.hasOwnProperty("state")&& history.state){
-		this.form = history.state.form;
-		this.currentPage = history.state.page.pageNo;
-		this.pageSize = history.state.page.pageSize;
-	}
+
+	created:function(){
+		if(history.hasOwnProperty("state")&& history.state){
+			this.form = history.state.form;
+			this.currentPage = history.state.page.pageNo;
+			this.pageSize = history.state.page.pageSize;
+		}
 		this.list();
 	},
 })

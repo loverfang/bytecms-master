@@ -5,23 +5,16 @@
                 <el-scrollbar class="ms-scrollbar" style="height: 100%;">
                 <el-form ref="form" label-width="120px" size="mini">
                     <el-form-item label="添加筛选条件:">
-                        <el-select
-                                @change="select">
-                            <el-option v-for='(item,index) in condition' :key="item.index" :value="index"
-                                       :label="item.name"></el-option>
+                        <el-select @change="select">
+                            <el-option v-for='(item,index) in condition' :key="item.index" :value="index" :label="item.name"></el-option>
                         </el-select>
                     </el-form-item>
                 </el-form>
                 </el-scrollbar>
             </el-col>
         </el-row>
-        <el-table size="mini" :show-header="false"
-                  :data="list"
-                  style="width: 100%">
-            <el-table-column
-                    prop="name"
-                    width="110">
-            </el-table-column>
+        <el-table size="mini" :show-header="false" :data="list" style="width: 100%">
+            <el-table-column prop="name" width="110"> </el-table-column>
             <el-table-column width="130">
                 <template slot-scope="scope">
                     <el-select v-model="scope.row.el" size="mini" v-if="scope.row.type=='input'||scope.row.type=='textarea'">
@@ -46,20 +39,18 @@
                     <span v-if="scope.row.hasOwnProperty('multiple')||scope.row.type=='switch' || scope.row.type=='role'">是</span>
                 </template>
             </el-table-column>
+
             <el-table-column >
                 <template slot-scope="scope">
                     <el-input  style="width: 200px" v-model="scope.row.value" size="mini"
                                v-if="scope.row.type=='input'||scope.row.type=='number'||scope.row.type=='textarea'">
                     </el-input>
                     <el-select  style="width: 200px" v-model="scope.row.value" size="mini" v-if="scope.row.hasOwnProperty('multiple')">
-                        <el-option v-for='item in $root[scope.row.model+"Options"]' :key="item[scope.row.key]" :value="item[scope.row.key]"
-                                   :label="item[scope.row.title]"></el-option>
+                        <el-option v-for='item in $root[scope.row.model+"Options"]' :key="item[scope.row.key]" :value="item[scope.row.key]" :label="item[scope.row.title]"></el-option>
                     </el-select>
                     <el-switch v-if="scope.row.type=='switch'" v-model="scope.row.value">
                     </el-switch>
-                    <ms-employee v-if="scope.row.type=='role'"
-                                      size="mini"
-                                      v-model="scope.row.value">
+                    <ms-employee v-if="scope.row.type=='role'" size="mini" v-model="scope.row.value">
                     </ms-employee>
                     <template v-if="scope.row.type=='time'">
                         <el-time-picker
