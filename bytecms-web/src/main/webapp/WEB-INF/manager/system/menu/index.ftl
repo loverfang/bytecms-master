@@ -162,15 +162,16 @@
 						that.emptyText = '';
 						that.loading = false;
 
+						debugger
 						console.log( '=============='  )
 						console.log( that.tableData )
-						console.log( ms.util.transTree(data.res.children) )
+						console.log( ms.util.transTree(data.res) )
 						console.log( '=============='  )
 						//that.dataList = ms.util.transTree(data.res.children);
-						that.dataList = ms.util.treeData(data.res.rows, 'id', 'parentId', 'children');
+						that.dataList = ms.util.treeData(data.res, 'id', 'parentId', 'children');
 						console.log( '>>>>>>>>>>>>>>'  )
-						console.log( ms.util.transTree(data.res.children) )
-						console.log( ms.util.treeData(data.res.children, 'id', 'parentId', 'children') )
+						console.log( ms.util.transTree(data.res) )
+						console.log( ms.util.treeData(data.res, 'id', 'parentId', 'children') )
 
 						form.modeldata = that.dataList;
 						debugger
