@@ -33,7 +33,6 @@
      * 转化树形数据：[{id:1,titile:"标题",pid:0,children:[{id:2,titile:"标题",pid:1}]}]
      */
     function treeData(source, id, parentId, children) {
-        debugger
         var cloneData = JSON.parse(JSON.stringify(source));
         return cloneData.filter(function (father) {
             var branchArr = cloneData.filter(function (child) {
@@ -43,6 +42,7 @@
             return !father[parentId] || father[parentId] == '0' ||  father[parentId] == null ;
         });
     }
+
     function transTree(data) {
         let result = []
         let map = {}
@@ -69,12 +69,21 @@
         let data = [] //返回的数组结构
         while (queue.length !== 0) { //当队列为空时就跳出循环
             let item = queue.shift() //取出队列中第一个元素
-            // data.push({
-            //     id: item.id,
-            //     parentId: item.parentId,
-            //     name: item.name
-            // })
-            data.push(item)
+            data.push({
+                id: item.id,
+                key: item.key,
+                name: item.name,
+                parentId: item.parentId,
+                attributes: item.attributes,
+                checked: item.checked,
+                hasChildren: item.hasChildren,
+                hasParent: item.hasParent,
+                spread: item.spread,
+                title: item.title,
+                url: item.url,
+                value: item.value
+            })
+            //data.push(item)
             let children = item.children // 取出该节点的孩子
             if (children) {
                 for (let i = 0; i < children.length; i++) {

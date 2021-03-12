@@ -30,7 +30,7 @@
                     return {
                         value: 'id',
                         // ID字段名
-                        label: 'title',
+                        label: 'name',
                         // 显示名称
                         children: 'children' // 子级字段名
 

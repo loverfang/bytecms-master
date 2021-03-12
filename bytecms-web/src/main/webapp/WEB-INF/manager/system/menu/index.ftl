@@ -15,6 +15,7 @@
 		</el-col>
 	</el-header>
 
+	<!-- 导入菜单功能可删除 -->
 	<el-dialog title="导入菜单" :visible.sync="dialogImportVisible" width="600px" append-to-body v-cloak>
 			<el-popover style="position: absolute;left: 16%;top: 5.6%;" placement="top-start" title="提示" trigger="hover" content="可通过代码生成器编辑菜单中复制菜单获取">
 				<i class="el-icon-question" slot="reference"></i>
@@ -92,55 +93,7 @@
 			modelJson: '',
 			saveDisabled: false,
 			loading: true,
-			emptyText: '',
-			tableData: [{
-				id: 1,
-				date: '2016-05-02',
-				name: '王小虎',
-				address: '上海市普陀区金沙江路 1518 弄',
-				kk:'dd'
-			}, {
-				id: 2,
-				date: '2016-05-04',
-				name: '王小虎',
-				address: '上海市普陀区金沙江路 1517 弄',
-				kk:'dd'
-			}, {
-				id: 3,
-				date: '2016-05-01',
-				name: '王小虎',
-				address: '上海市普陀区金沙江路 1519 弄',
-				children: [{
-					id: 31,
-					date: '2016-05-01',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1519 弄',
-					children:[{
-						id: 31,
-						date: '2016-05-01',
-						name: '王小虎',
-						address: '上海市普陀区金沙江路 1519 弄',
-					}, {
-						id: 32,
-						date: '2016-05-01',
-						name: '王小虎',
-						address: '上海市普陀区金沙江路 1519 弄'
-					}],
-					kk:'dd'
-				}, {
-					id: 32,
-					date: '2016-05-01',
-					name: '王小虎',
-					address: '上海市普陀区金沙江路 1519 弄',
-					kk:'dd'
-				}]
-			}, {
-				id: 4,
-				date: '2016-05-03',
-				name: '王小虎',
-				address: '上海市普陀区金沙江路 1516 弄',
-				kk:'dd'
-			}],
+			emptyText: ''
 		},
 		watch: {
 			'dialogImportVisible': function (n, o) {
@@ -153,7 +106,8 @@
 			//查询列表
 			list: function () {
 				var that = this;
-				ms.http.get(ms.manager + "/menu/list", {}).then(function (data) {
+				//ms.http.get(ms.manager + "/menu/list", {}).then(function (data) {
+				ms.http.get(ms.manager + "/menu/selectTreeList", {}).then(function (data) {
 					if (data.res.length <= 0) {
 						that.loading = false;
 						that.emptyText = '暂无数据';
@@ -162,19 +116,13 @@
 						that.emptyText = '';
 						that.loading = false;
 
-						debugger
-						console.log( '=============='  )
-						console.log( that.tableData )
-						console.log( ms.util.transTree(data.res) )
-						console.log( '=============='  )
-						//that.dataList = ms.util.transTree(data.res.children);
-						that.dataList = ms.util.treeData(data.res, 'id', 'parentId', 'children');
+						//console.log(ms.util.transArr(data.res));
 						console.log( '>>>>>>>>>>>>>>'  )
-						console.log( ms.util.transTree(data.res) )
-						console.log( ms.util.treeData(data.res, 'id', 'parentId', 'children') )
+						//console.log( ms.util.treeData(ms.util.transArr(data.res), 'id', 'parentId', 'children') )
+						that.dataList = data.res.children;
+						//给弹出框赋值
+						//form.modeldata = data.res;
 
-						form.modeldata = that.dataList;
-						debugger
 					}
 				}).catch(function (err) {
 					console.log(err);
