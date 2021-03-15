@@ -15,11 +15,10 @@
 		</el-col>
 	</el-header>
 
-	<!-- 导入菜单功能可删除 -->
 	<el-dialog title="导入菜单" :visible.sync="dialogImportVisible" width="600px" append-to-body v-cloak>
-			<el-popover style="position: absolute;left: 16%;top: 5.6%;" placement="top-start" title="提示" trigger="hover" content="可通过代码生成器编辑菜单中复制菜单获取">
-				<i class="el-icon-question" slot="reference"></i>
-			</el-popover>
+		<el-popover style="position: absolute;left: 16%;top: 5.6%;" placement="top-start" title="提示" trigger="hover" content="可通过代码生成器编辑菜单中复制菜单获取">
+			<i class="el-icon-question" slot="reference"></i>
+		</el-popover>
 		<el-form>
 			<el-form-item>
 				<el-input :rows="10" type="textarea" v-model="modelJson"></el-input>
@@ -39,7 +38,7 @@
 				  tooltip-effect="dark"
 				  @selection-change="handleSelectionChange"
 				  row-key="id"
-				  :tree-props="{children:'children'}">
+				  :tree-props="{children: 'children' }">
 
 			<template style="width:100%" slot="empty">
 				{{emptyText}}
@@ -48,29 +47,7 @@
 
 			<el-table-column label="菜单名称" align="left" prop="name" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column label="菜单图标" align="center" prop="icon">
-				<template slot-scope="scope">
-					<i style="font-size: 24px !important;" class="iconfont" :class="scope.row.icon"></i>
-				</template>
-			</el-table-column>
-			<el-table-column label="菜单标识" align="left" prop="perms" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column label="API接口" align="left" prop="url" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column label="菜单类型" align="left" prop="type" show-overflow-tooltip>
-<#--				<template slot-scope="scope">-->
-<#--					{{scope.row.type==0?'目录':scope.row.type==1?'菜单':'按钮'}}-->
-<#--				</template>-->
-			</el-table-column>
-			<el-table-column label="菜单排序" align="right" prop="orderNum">
-			</el-table-column>
-			<el-table-column label="操作" align="center" width="150">
-				<template slot-scope="scope">
-					<el-button size="medium" type="text" @click="editModal(scope.row.id)">编辑</el-button>
-					<el-button size="medium" type="text" @click="del([scope.row])">删除</el-button>
-					<el-button size="medium" type="text" @click="editModal(scope.row.id)">增加</el-button>
-				</template>
-			</el-table-column>
+
 		</el-table>
 	</el-main>
 </div>
@@ -106,8 +83,8 @@
 			//查询列表
 			list: function () {
 				var that = this;
-				//ms.http.get(ms.manager + "/menu/list", {}).then(function (data) {
 				ms.http.get(ms.manager + "/menu/selectTreeList", {}).then(function (data) {
+					debugger
 					if (data.res.length <= 0) {
 						that.loading = false;
 						that.emptyText = '暂无数据';
@@ -116,13 +93,10 @@
 						that.emptyText = '';
 						that.loading = false;
 
-						//console.log(ms.util.transArr(data.res));
-						console.log( '>>>>>>>>>>>>>>'  )
-						//console.log( ms.util.treeData(ms.util.transArr(data.res), 'id', 'parentId', 'children') )
-						that.dataList = data.res.children;
-						//给弹出框赋值
-						//form.modeldata = data.res;
+						//that.dataList = ms.util.treeData(ms.util.treeToArr(data.res),"id","parentId","children");
 
+						//form.modeldata = that.dataList;
+						debugger
 					}
 				}).catch(function (err) {
 					console.log(err);

@@ -103,7 +103,7 @@ public class BaseServiceImpl<D extends BaseModel,T extends BaseModel,M extends B
         if (Checker.BeEmpty(list)) {
 			return Lists.newArrayList();
 		}
-        return DozerUtils.T2DList(dozerMapper,list,dclz);
+        return DozerUtils.T2DList(dozerMapper, list, dclz);
 	}
 
 	@Override

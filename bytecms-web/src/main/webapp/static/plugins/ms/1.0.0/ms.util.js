@@ -22,7 +22,7 @@
     }
 
     /**
-     * 列表数据转化为树形结构的列表
+     * 含有父子关系的列表数据  转化  为树形结构的列表
      * @param source 数据源list
      * @param id 编号
      * @param parentId 父级编号
@@ -41,6 +41,44 @@
             branchArr.length > 0 ? father[children] = branchArr : '';
             return !father[parentId] || father[parentId] == '0' ||  father[parentId] == null ;
         });
+    }
+
+    /**
+     * 后台返回的树形结果,调用此方法将其转换成含有父ID的普通数组
+     * @param treeData 树形结构的数据
+     * @returns [{id:1,titile:"标题",pid:0},{id:2,titile:"标题",pid:1}]
+     */
+    function treeToArr(treeData) {
+        if (!(!treeData.hasOwnProperty('name') || !treeData)) {
+            let arr = []
+            let obj = {}
+            obj.name = treeData.name
+            obj.id = treeData.id
+            obj.parentId = treeData.parentId
+            obj.attributes = treeData.attributes
+            obj.hasParent = treeData.hasParent
+            //obj.hasChildren = treeData.hasChildren
+            obj.children = treeData.children.map(value => {
+                // [1] arr = arr.concat(transfer(value))
+                let childObj = {}
+                childObj.name = value.name
+                childObj.id = value.id;
+                childObj.parentId = value.parentId
+                childObj.attributes = value.attributes
+                childObj.hasParent = value.hasParent
+                //childObj.hasChildren = value.hasChildren
+                return childObj;
+            })
+            arr.push(obj)
+
+            // 这段代码可由代码 [1] 替代，替代后父元素在子元素后
+            treeData.children.forEach(value => {
+                arr = arr.concat(treeToArr(value))
+            })
+            return arr
+        } else { // 初始treeData是否为空树
+            return []
+        }
     }
 
     function transTree(data) {
@@ -62,38 +100,7 @@
         })
         return result //数组里的对象和data是共享的
     }
-    //console.log(JSON.stringify(transTree(data)))
 
-    function transArr(node) {
-        let queue= [node]
-        let data = [] //返回的数组结构
-        while (queue.length !== 0) { //当队列为空时就跳出循环
-            let item = queue.shift() //取出队列中第一个元素
-            data.push({
-                id: item.id,
-                key: item.key,
-                name: item.name,
-                parentId: item.parentId,
-                attributes: item.attributes,
-                checked: item.checked,
-                hasChildren: item.hasChildren,
-                hasParent: item.hasParent,
-                spread: item.spread,
-                title: item.title,
-                url: item.url,
-                value: item.value
-            })
-            //data.push(item)
-            let children = item.children // 取出该节点的孩子
-            if (children) {
-                for (let i = 0; i < children.length; i++) {
-                    queue.push(children[i]) //将子节点加入到队列尾部
-                }
-            }
-        }
-        return data
-    }
-    //console.log(transArr(node))
 
     //验证是否为子集
     function childValidate(sourceList, id, parentId, key, parentKey) {
@@ -394,7 +401,7 @@
     var util = {
         getParameter: getParameter,
         treeData:treeData,
-        transArr:transArr,
+        treeToArr:treeToArr,
         transTree:transTree,
         childValidate:childValidate,
         moneyFormatter:moneyFormatter,

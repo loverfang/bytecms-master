@@ -10,47 +10,6 @@
     axios.interceptors.request.use(
 
         function(config) {
-            // config.headers = {
-            //     'Content-Type': 'application/x-www-form-urlencoded',
-            //     'Cache-Control': 'no-cache',
-            //     'Pragma': 'no-cache',
-            //     'X-Requested-With': 'XMLHttpRequest'
-            // }
-            //
-            // if (config.method === 'post' && config.headers["Content-Type"] === "application/x-www-form-urlencoded") {
-            //     config.data = Qs.stringify(config.data, {
-            //         allowDots: true
-            //     });
-            // }
-            // return config;
-
-            // 获取token
-            // const token = localStorage.getItem('token');
-            // // 设置参数格式
-            // if(!config.headers['Content-Type']){
-            //     config.headers = {
-            //         'Content-Type':'application/json',
-            //         'Cache-Control': 'no-cache',
-            //         'Pragma': 'no-cache',
-            //         'X-Requested-With': 'XMLHttpRequest'
-            //     };
-            // }
-            //
-            // // 添加token到headers
-            // if(token){
-            //     config.headers.token = token
-            // }
-            //
-            // // 鉴权参数设置
-            // if(config.method === 'get'){
-            //     //get请求下 参数在params中，其他请求在data中
-            //     config.params = config.params || {};
-            //     let json = JSON.parse(JSON.stringify(config.params));
-            //     //一些参数处理
-            // }else{
-            //     config.data = config.data || {};
-            //     //一些参数处理
-            // }
 
             const token = localStorage.getItem('X-Token');
             if (token) {

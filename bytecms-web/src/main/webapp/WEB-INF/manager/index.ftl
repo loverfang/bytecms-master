@@ -316,7 +316,8 @@
                 var that = this;
                 ms.http.get(ms.manager + "/menu/selectTreeList").then(function (data) {
                     // 后台返回的是一棵带根的树形菜单,我们需要把它转换成一个list
-                    that.menuList = ms.util.transArr(data.res);
+                    that.menuList = ms.util.treeToArr(data.res);
+                    // that.menuList = data.res.children;
                 }, function (err) {
                     that.$message.error(err);
                 })

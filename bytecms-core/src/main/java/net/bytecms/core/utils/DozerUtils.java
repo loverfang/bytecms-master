@@ -25,12 +25,9 @@ public class DozerUtils {
         return targetList;
     }
 
-
     /**
      * 封装dozer处理集合的方法：List<T> --> List<D>
      */
-
-
     public static <D , T extends BaseModel> List<D> T2DList(Mapper mapper, List<T> sourceList, Class<D> targetObjectClass) {
         List<D> targetList = new ArrayList<>();
         for (T t : sourceList) {
@@ -38,4 +35,5 @@ public class DozerUtils {
         }
         return targetList;
     }
+
 }
