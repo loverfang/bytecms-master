@@ -44,7 +44,7 @@
 
     <dependency>
       <groupId>net.gmbyte</groupId>
-      <artifactId>bytecms-security</artifactId>
+      <artifactId>bytecms-security-oauth2</artifactId>
     </dependency>
 
     <dependency>

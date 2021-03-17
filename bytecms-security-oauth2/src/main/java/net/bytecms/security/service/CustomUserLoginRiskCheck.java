@@ -1,7 +1,7 @@
-package net.bytecms.security.custom;
+package net.bytecms.security.service;
 
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -19,7 +19,7 @@ public class CustomUserLoginRiskCheck {
     @Autowired
     BaseRedisService baseRedisService;
     @Autowired
-    ThinkCmsConfig cmsConfig;
+    ByteCmsConfig cmsConfig;
 
     public UserDto loginRiskCheck(String userName) throws CustomException {
         checkMaxError(userName);

@@ -8,6 +8,9 @@ import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+/**
+ * 用于认证的用户信息
+ */
 @Data
 @Accessors(chain = true)
 public class CustomJwtUser extends User {
@@ -20,5 +23,4 @@ public class CustomJwtUser extends User {
     public CustomJwtUser(String username, String password, Collection<GrantedAuthority> authorities) {
         super(username, password, authorities);
     }
-
 }

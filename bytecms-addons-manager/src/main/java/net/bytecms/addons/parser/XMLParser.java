@@ -1,6 +1,6 @@
 package net.bytecms.addons.parser;
 import net.bytecms.addons.model.Plugin;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.utils.FileUtil;
 import net.bytecms.core.utils.SpringContextHolder;
 import org.dom4j.Document;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 public class XMLParser {
 
-    static ThinkCmsConfig thinkCmsConfig = SpringContextHolder.getBean(ThinkCmsConfig.class);
+    static ByteCmsConfig byteCmsConfig = SpringContextHolder.getBean(ByteCmsConfig.class);
 
     static List<Plugin> pluginList=new ArrayList<>(16);
 
@@ -30,7 +30,7 @@ public class XMLParser {
         List<?> plugins = root.elements("plugin");
         for (Object pluginObj : plugins) {
             Element pluginEle = (Element) pluginObj;
-            String jar = thinkCmsConfig.getPluginsBasePath()+File.separator+pluginEle.elementText("jar");
+            String jar = byteCmsConfig.getPluginsBasePath()+File.separator+pluginEle.elementText("jar");
             if(pluginIsExist(jar)){
                 Plugin plugin = new Plugin();
                 plugin.setName(pluginEle.elementText("name"));

@@ -1,6 +1,6 @@
 package net.bytecms.web.config;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,7 @@ public class WebConfig  implements WebMvcConfigurer {
     AuthInterceptor authInterceptor;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -31,7 +31,7 @@ public class WebConfig  implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //添加资源全局拦截器
-        registry.addResourceHandler(Constants.localtionUploadPattern+"**").addResourceLocations("file:///"+thinkCmsConfig.getFileResourcePath());
+        registry.addResourceHandler(Constants.localtionUploadPattern+"**").addResourceLocations("file:///"+ byteCmsConfig.getFileResourcePath());
         //registry.addResourceHandler(Constants.localtionUploadPattern+"**").addResourceLocations("file:E:/blog");
 
         //三种映射方式 webapp下、当前目录下、jar内

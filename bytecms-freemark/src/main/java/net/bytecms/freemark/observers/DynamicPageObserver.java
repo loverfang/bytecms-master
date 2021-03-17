@@ -1,6 +1,6 @@
 package net.bytecms.freemark.observers;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -27,7 +27,7 @@ public class DynamicPageObserver extends AdapterObserver {
 
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
 
     @Override
@@ -42,7 +42,7 @@ public class DynamicPageObserver extends AdapterObserver {
                     for (Map.Entry<String, Object> m : mapData.entrySet()) {
                         if(Checker.BeNotNull(m)){
                             String tempPath = m.getKey()+ Constants.DEFAULT_HTML_SUFFIX;
-                            String staticPath = thinkCmsConfig.getSiteStaticFileRootPath()+ File.separator+m.getValue()+Constants.DEFAULT_HTML_SUFFIX;
+                            String staticPath = byteCmsConfig.getSiteStaticFileRootPath()+ File.separator+m.getValue()+Constants.DEFAULT_HTML_SUFFIX;
                             ApiResult apiResult=templateComponent.createIndexStaticFile(tempPath,staticPath,mapData);
                             if(apiResult.ckSuccess()){
                                 apiResult.put(Constants.progress,100);

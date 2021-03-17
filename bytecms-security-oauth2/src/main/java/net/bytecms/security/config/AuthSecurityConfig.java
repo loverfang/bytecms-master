@@ -17,7 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class GloableSecurityConfig extends WebSecurityConfigurerAdapter{
+public class AuthSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Autowired
     CustomUserAuthenticationProvider customUserAuthenticationProvider;
@@ -35,11 +35,11 @@ public class GloableSecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-            .requestMatchers().anyRequest()
+        http.csrf().disable().
+            requestMatchers().anyRequest()
             .and()
             .authorizeRequests()
-            .antMatchers(new String[] { "/oauth/*", "/user/info", "/minapp/**", "/error", "/page/**", "/content/searchKeyWord" }).permitAll();
+            .antMatchers(new String[] { "/oauth/*", "/menu/**" }).permitAll();
     }
 
     /**
@@ -59,3 +59,4 @@ public class GloableSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 
 }
+

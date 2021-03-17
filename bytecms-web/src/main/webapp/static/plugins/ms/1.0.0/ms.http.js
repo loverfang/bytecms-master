@@ -65,14 +65,12 @@
     }
 
 
-
     /**
      * 封装get方法
      * @param url
      * @param data
      * @returns {Promise}
      */
-
     function get(url, params) {
         if (params == undefined) {
             params = {}
@@ -97,9 +95,7 @@
      * @param data
      * @returns {Promise}
      */
-
     function post(url, data, conf) {
-
         if (data == undefined) {
             data = {}
         }
@@ -113,6 +109,30 @@
                 })
         })
     }
+
+    /**
+     * 封装delete请求
+     * @param url
+     * @param data
+     * @returns {Promise}
+     */
+    function del(url, params) {
+        if (params == undefined) {
+            params = {}
+        }
+        return new Promise(function(resolve, reject) {
+            ajax().delete(url, {
+                params: params
+            })
+            .then(function(response) {
+                resolve(response.data);
+            })
+            .catch(function(err) {
+                reject(err)
+            })
+        })
+    }
+
 
     /**
      * 封装patch请求
@@ -162,8 +182,8 @@
         get: get,
         post: post,
         put: put,
-        patch: patch
-
+        patch: patch,
+        del: del,
     }
 
     if (typeof ms != "object") {

@@ -77,15 +77,18 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = this.tokenExtractor.extract(request);
-        if (Checker.BeNull(authentication))
+        if (Checker.BeNull(authentication)) {
             throw new AccessDeniedException("Invalid Jwt is invalid!");
+        }
+
         try {
-            this.customJwtHandler.handlerJwtToken(authentication, this.tokenStore);
+            this.customJwtHandler.handlerJwtToken(authentication, tokenStore);
         } catch (CustomException error) {
             throw new AccessDeniedException(error.getMessage());
         }
+
         try {
-            filterChain.doFilter((ServletRequest)request, (ServletResponse)response);
+            filterChain.doFilter(request, response);
         } finally {
             BaseContextKit.remove();
         }

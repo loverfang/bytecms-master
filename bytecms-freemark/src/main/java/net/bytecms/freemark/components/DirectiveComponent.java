@@ -1,5 +1,5 @@
 package net.bytecms.freemark.components;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.Checker;
 import net.bytecms.freemark.corelibs.directive.AbstractTemplateDirective;
@@ -25,7 +25,7 @@ public class DirectiveComponent {
     private TemplateComponent templateComponent;
 
     @Autowired
-    private ThinkCmsConfig thinkCmsConfig;
+    private ByteCmsConfig byteCmsConfig;
 
     @Autowired
     public void init(Configuration configuration, List<AbstractTemplateDirective> templateDirectives, List<BaseMethod> baseMethodHandlers) throws TemplateModelException {
@@ -41,8 +41,8 @@ public class DirectiveComponent {
             }
         }
         configuration.setAllSharedVariables(new SimpleHash(freemarkerVariables,configuration.getObjectWrapper()));
-        configuration.setSharedVariable(Constants.DOMAIN, thinkCmsConfig.getSiteDomain());
-        configuration.setSharedVariable(Constants.SERVER, thinkCmsConfig.getServerApi());
+        configuration.setSharedVariable(Constants.DOMAIN, byteCmsConfig.getSiteDomain());
+        configuration.setSharedVariable(Constants.SERVER, byteCmsConfig.getServerApi());
         templateComponent.setConfiguration(configuration);
     }
 }

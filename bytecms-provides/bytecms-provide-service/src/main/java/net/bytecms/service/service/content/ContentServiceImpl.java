@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import net.bytecms.core.annotation.CacheClear;
 import net.bytecms.core.api.BaseRedisService;
 import net.bytecms.core.api.BaseSolrService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.constants.DirectiveNameEnum;
 import net.bytecms.core.constants.SolrCoreEnum;
@@ -105,7 +105,7 @@ public class ContentServiceImpl extends BaseServiceImpl<ContentDto, Content, Con
     private CmsContentRelatedService relatedService;
 
     @Autowired
-    private ThinkCmsConfig thinkCmsConfig;
+    private ByteCmsConfig byteCmsConfig;
 
 
     @Override
@@ -559,7 +559,7 @@ public class ContentServiceImpl extends BaseServiceImpl<ContentDto, Content, Con
             for(ContentDto contentDto:contentDtos){
                 String url=contentDto.getUrl();
                 if(Checker.BeNotBlank(url)){
-                    url= thinkCmsConfig.getSiteStaticFileRootPath()+url;
+                    url= byteCmsConfig.getSiteStaticFileRootPath()+url;
                     File file=new File(url);
                     if(file.exists()){
                         file.delete();

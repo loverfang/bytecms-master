@@ -12,7 +12,7 @@ import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.persistent.FileRecorder;
 import com.qiniu.util.Auth;
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -42,10 +42,10 @@ public class QiNiuYunClient extends UploadClient {
 
     @PostConstruct
     public void init(){
-        accessKey = thinkCmsConfig.getOss().getAccessKey();
-        secretKey = thinkCmsConfig.getOss().getSecretKey();
-        prefix=thinkCmsConfig.getOss().getPrefix();
-        bucket = thinkCmsConfig.getOss().getBucket();
+        accessKey = byteCmsConfig.getOss().getAccessKey();
+        secretKey = byteCmsConfig.getOss().getSecretKey();
+        prefix= byteCmsConfig.getOss().getPrefix();
+        bucket = byteCmsConfig.getOss().getBucket();
         cfg = new Configuration(Region.region0());
         uploadManager = new UploadManager(cfg);
         auth = Auth.create(accessKey, secretKey);
@@ -56,7 +56,7 @@ public class QiNiuYunClient extends UploadClient {
     BaseRedisService baseRedisService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Override
     public ApiResult uploadFile(MultipartFile file) {
@@ -86,7 +86,7 @@ public class QiNiuYunClient extends UploadClient {
         MultipartFile multipartFile=chunk.getFile();
         DefaultPutRet putRet=null;
         try {
-            FileRecorder fileRecorder = new FileRecorder(thinkCmsConfig.getSourceRootPath());
+            FileRecorder fileRecorder = new FileRecorder(byteCmsConfig.getSourceRootPath());
             UploadManager uploadManager = new UploadManager(cfg, fileRecorder);
             String upToken = auth.uploadToken(bucket);
             Response response = uploadManager.put(multipartFile.getInputStream(), chunk.getIdentifier(), upToken,null,null);

@@ -52,9 +52,4 @@ public class MenuController extends BaseController<MenuService> {
         return menus;
     }
 
-    @RequestMapping("/selectTreeList2")
-    public Tree<MenuDto> selectTreeList2() {
-        Tree<MenuDto> menus = service.selectTreeList();
-        return menus;
-    }
 }

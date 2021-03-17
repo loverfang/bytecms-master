@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "thinkitcms")
-public class ThinkCmsConfig {
+public class ByteCmsConfig {
 
     /**
      * 资源根目录
@@ -92,7 +92,7 @@ public class ThinkCmsConfig {
     /**
      * 第三方对象存储
      */
-    public ThinkCmsConfig.oss oss = new ThinkCmsConfig.oss();
+    public ByteCmsConfig.oss oss = new ByteCmsConfig.oss();
 
     @Data
     public static class oss{

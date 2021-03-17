@@ -21,7 +21,7 @@ public class BuildTree {
 				if (id != null && id.equals(pid)) {
 					parent.getChildren().add(children);
 					children.setHasParent(true);
-					parent.setHasChildren(true);
+					parent.setHasChildrenNode(true);
 					continue;
 				}
 			}
@@ -34,7 +34,7 @@ public class BuildTree {
 			root.setId("-1");
 			root.setParentId("0");
 			root.setHasParent(false);
-			root.setHasChildren(true);
+			root.setHasChildrenNode(true);
 			root.setChildren(topNodes);
 			root.setName("全 部");
 			if(isck.length>0&&isck[0]) {
@@ -60,7 +60,7 @@ public class BuildTree {
 				if (id != null && id.equals(pid)) {
 					parent.getChildren().add(children);
 					children.setHasParent(true);
-					parent.setHasChildren(true);
+					parent.setHasChildrenNode(true);
 					continue;
 				}
 			}

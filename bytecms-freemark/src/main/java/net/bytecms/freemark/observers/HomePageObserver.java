@@ -1,6 +1,6 @@
 package net.bytecms.freemark.observers;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -23,7 +23,7 @@ public class HomePageObserver extends AdapterObserver {
 
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
 
     @Override
@@ -33,7 +33,7 @@ public class HomePageObserver extends AdapterObserver {
             if(data instanceof HomePageObserverData){
                 HomePageObserverData homePageData = (HomePageObserverData) data;
                 String homePageTemp = Constants.DEFAULT_HOME_PAGE;
-                String homePageStatic = thinkCmsConfig.getSiteStaticFileRootPath()+ File.separator+Constants.DEFAULT_HOME_PAGE;
+                String homePageStatic = byteCmsConfig.getSiteStaticFileRootPath()+ File.separator+Constants.DEFAULT_HOME_PAGE;
                 templateComponent.createIndexStaticFile(homePageTemp,homePageStatic,homePageData.getMapData());
             }
         }
@@ -46,7 +46,7 @@ public class HomePageObserver extends AdapterObserver {
             if(data instanceof HomePageObserverData){
                 HomePageObserverData homePageData = (HomePageObserverData) data;
                 String homePageTemp = Constants.DEFAULT_HOME_PAGE;
-                String homePageStatic = thinkCmsConfig.getSiteStaticFileRootPath()+ File.separator+Constants.DEFAULT_HOME_PAGE;
+                String homePageStatic = byteCmsConfig.getSiteStaticFileRootPath()+ File.separator+Constants.DEFAULT_HOME_PAGE;
                 ApiResult apiResult=templateComponent.createIndexStaticFile(homePageTemp,homePageStatic,homePageData.getMapData());
                 apiResult.put(Constants.progress,10);
                 notifyRes(apiResult,notifyRes,data.getCreateId());

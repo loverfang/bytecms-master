@@ -20,6 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthBeanConfig {
 
+    /**
+     * 密码编码器
+     * @return
+     */
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();

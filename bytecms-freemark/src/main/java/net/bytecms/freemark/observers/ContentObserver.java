@@ -1,6 +1,6 @@
 package net.bytecms.freemark.observers;
 import net.bytecms.core.api.BaseSolrService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.constants.SolrCoreEnum;
 import net.bytecms.core.handler.CustomException;
@@ -36,7 +36,7 @@ public class ContentObserver extends AdapterObserver {
     ContentService contentService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     BaseSolrService baseSolrService;
@@ -82,7 +82,7 @@ public class ContentObserver extends AdapterObserver {
         if (Checker.BeNotBlank(tempPath)) { // 不存在内容模板时 不创建静态页
             String categoryId = obsData.getCategoryId();
             String categoryCode = obsData.getCategoryCode();
-            String staticRootPath = thinkCmsConfig.getSiteStaticFileRootPath();
+            String staticRootPath = byteCmsConfig.getSiteStaticFileRootPath();
             String staticFilePath = File.separator + categoryCode + File.separator + dateStr + File.separator + contentId + Constants.DEFAULT_HTML_SUFFIX;
             Map<String, Object> params = new HashMap<>(16);
             params.put(Constants.contentId, contentId);

@@ -2,7 +2,7 @@ package net.bytecms.freemark.observers;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.utils.ApiResult;
@@ -42,7 +42,7 @@ public class ContentAllObserver extends AdapterObserver {
     ContentService contentService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     CmsCategoryAttributeService cmsCategoryAttributeService;
@@ -122,7 +122,7 @@ public class ContentAllObserver extends AdapterObserver {
                 if (hasGen) {
                     dateStr = contentDto.getRulesData();
                 }
-                String staticRootPath = thinkCmsConfig.getSiteStaticFileRootPath();
+                String staticRootPath = byteCmsConfig.getSiteStaticFileRootPath();
                 String staticFilePath = File.separator + categoryCode + File.separator + dateStr + File.separator + contentId + Constants.DEFAULT_HTML_SUFFIX;
                 ContentHelp contentHelp = new ContentHelp(contentDto);
                 contentHelp.put(Constants.url, staticFilePath);

@@ -3,7 +3,7 @@ package net.bytecms.service.service.resource;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import net.bytecms.core.annotation.CacheClear;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.service.BaseServiceImpl;
 import net.bytecms.core.utils.Checker;
@@ -34,7 +34,7 @@ public class SysResourceServiceImpl extends BaseServiceImpl<SysResourceDto, SysR
     protected FastFileStorageClient storageClient;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Cacheable(value = Constants.cacheName, key = "#root.targetClass+'.'+#root.methodName+'.'+#p0", unless = "#result == null")
     @Override

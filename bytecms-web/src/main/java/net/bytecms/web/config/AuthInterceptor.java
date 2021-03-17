@@ -61,6 +61,8 @@ public class AuthInterceptor implements HandlerInterceptor {
         allows.add("select");
         allows.add("get");
         allows.add("list");
+        allows.add("save");
+        allows.add("delete");
         allows.add("keepUploadFile");
         return allows;
     }

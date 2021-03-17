@@ -17,12 +17,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CustomAccessDecisionManager implements AccessDecisionManager {
+
     @Autowired
     MenuService menuService;
 
     @Override
     public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-        Set<String> authPerms = this.menuService.selectPermsByUid(BaseContextKit.getUserId());
+        Set<String> authPerms = menuService.selectPermsByUid(BaseContextKit.getUserId());
         Set<String> needAuthSets = (Set<String>)configAttributes.stream().map(auth -> auth.getAttribute()).collect(Collectors.toSet());
         boolean beMatch = authPerms.containsAll(needAuthSets);
         if (!beMatch){

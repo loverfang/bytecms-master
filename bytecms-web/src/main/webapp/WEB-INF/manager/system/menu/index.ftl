@@ -9,8 +9,8 @@
 <div id="index" v-cloak class="ms-index">
 	<el-header class="ms-header" height="50px">
 		<el-col :span="24">
-			<el-button type="primary" icon="el-icon-plus" size="mini" @click="editModal(0)">新增</el-button>
-			<el-button type="danger" icon="el-icon-delete" size="mini" @click="del(selectionList)"  :disabled="!selectionList.length">删除</el-button>
+			<el-button type="primary" icon="el-icon-plus" size="mini" @click="editMenu(0)">新增</el-button>
+<#--			<el-button type="danger" icon="el-icon-delete" size="mini" @click="del(selectionList)"  :disabled="!selectionList.length">删除</el-button>-->
 			<el-button icon="iconfont icon-daoru" size="mini" @click="dialogImportVisible=true" style="float: right">导入</el-button>
 		</el-col>
 	</el-header>
@@ -21,12 +21,12 @@
 		</el-popover>
 		<el-form>
 			<el-form-item>
-				<el-input :rows="10" type="textarea" v-model="modelJson"></el-input>
+				<el-input :rows="10" type="textarea" v-model="menuJson"></el-input>
 			</el-form-item>
 		</el-form>
 		<div slot="footer">
 			<el-button size="mini" @click="dialogImportVisible = false">取 消</el-button>
-			<el-button size="mini" :loading="saveDisabled" :disabled="modelJson==''" type="primary" @click="imputJson()">确 定</el-button>
+			<el-button size="mini" :loading="saveDisabled" :disabled="menuJson==''" type="primary" @click="imputJson()">确 定</el-button>
 		</div>
 	</el-dialog>
 
@@ -36,16 +36,39 @@
 				  class="ms-table-pagination"
 				  border :data="dataList"
 				  tooltip-effect="dark"
-				  @selection-change="handleSelectionChange"
+<#--				  @selection-change="handleSelectionChange"-->
 				  row-key="id"
-				  :tree-props="{children: 'children' }">
+				  :tree-props="{children: 'children'}">
 
 			<template style="width:100%" slot="empty">
 				{{emptyText}}
 			</template>
-			<el-table-column type="selection"></el-table-column>
+<#--			<el-table-column type="selection"></el-table-column>-->
 
 			<el-table-column label="菜单名称" align="left" prop="name" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column label="菜单图标" align="center" prop="icon">
+				<template slot-scope="scope">
+					<i style="font-size: 24px !important;" class="iconfont" :class="scope.row.icon"></i>
+				</template>
+			</el-table-column>
+			<el-table-column label="菜单标识" align="left" prop="attributes.perms" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column label="API接口" align="left" prop="attributes.url" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column label="菜单类型" align="left" prop="attributes.type" show-overflow-tooltip>
+				<template slot-scope="scope">
+					{{scope.row.attributes.type=='0'?'目录':scope.row.attributes.type=='1'?'菜单':'按钮'}}
+				</template>
+			</el-table-column>
+			<el-table-column label="菜单排序" align="right" prop="attributes.orderNum">
+			</el-table-column>
+			<el-table-column label="操作" align="center" width="150">
+				<template slot-scope="scope">
+					<el-button size="medium" type="text" @click="editMenu(scope.row.id)">编辑</el-button>
+					<el-button size="medium" type="text" @click="del([scope.row])">删除</el-button>
+					<el-button size="medium" type="text" @click="editMenu(scope.row.id)">增加</el-button>
+				</template>
 			</el-table-column>
 
 		</el-table>
@@ -67,7 +90,7 @@
 			//列表选中
 			mananger: ms.manager,
 			dialogImportVisible: false,
-			modelJson: '',
+			menuJson: '',
 			saveDisabled: false,
 			loading: true,
 			emptyText: ''
@@ -75,7 +98,7 @@
 		watch: {
 			'dialogImportVisible': function (n, o) {
 				if (!n) {
-					this.modelJson = '';
+					this.menuJson = '';
 				}
 			}
 		},
@@ -84,7 +107,6 @@
 			list: function () {
 				var that = this;
 				ms.http.get(ms.manager + "/menu/selectTreeList", {}).then(function (data) {
-					debugger
 					if (data.res.length <= 0) {
 						that.loading = false;
 						that.emptyText = '暂无数据';
@@ -92,11 +114,9 @@
 					} else {
 						that.emptyText = '';
 						that.loading = false;
-
-						//that.dataList = ms.util.treeData(ms.util.treeToArr(data.res),"id","parentId","children");
-
-						//form.modeldata = that.dataList;
-						debugger
+                        // 表格赋值,弹出框赋值
+						that.dataList = data.res.children;
+						form.menuData = that.dataList;
 					}
 				}).catch(function (err) {
 					console.log(err);
@@ -106,6 +126,7 @@
 			handleSelectionChange: function (val) {
 				this.selectionList = val;
 			},
+
 			//删除
 			del: function (row) {
 				var that = this;
@@ -114,58 +135,50 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(function () {
+					debugger
 					var ids = "";
 					var markList = JSON.parse(localStorage.getItem("markList"));
+
 					for (var i = 0; i < row.length; i++) {
 						if (ids == "") {
 							ids = row[i].id;
 							var index = markList.findIndex(function (x) {
-								return x.title == row[i].modelTitle
+								return x.title == row[i].name
 							});
 							markList.splice(index, 1);
 						} else {
 							ids = ids + "," + row[i].id;
 						}
 					}
-					localStorage.setItem("markList", JSON.stringify(markList))
-					ms.http.post(ms.manager + "/model/delete.do", {
-						ids: ids
-					}).then(function (data) {
-						if (data.result) {
-							that.$notify({
-								type: 'success',
-								message: '删除成功!'
-							}); //删除成功，刷新列表
 
+					localStorage.setItem("markList", JSON.stringify(markList))
+					ms.http.del(ms.manager + "/menu/delete", {"id": ids}).then(function (data) {
+						if (data.result) {
+							that.$notify({ type: 'success', message: '删除成功!' });
 							that.list();
 						} else {
-							that.$notify({
-								title: '失败',
-								message: data.msg,
-								type: 'warning'
-							});
+							that.$notify({ title: '失败', message: data.msg, type: 'warning' });
 						}
 					});
 				}).catch(function () {
-					that.$notify({
-						type: 'info',
-						message: '已取消删除'
-					});
+					that.$notify({ type: 'info', message: '已取消删除' });
 				});
 			},
+
 			//新增或编辑
-			editModal: function (id) {
+			editMenu: function (id) {
 				form.open(id);
 			},
+
 			imputJson: function () {
 				var that = this;
 				this.saveDisabled = true
 				ms.http.post(ms.manager + "/model/import.do", {
-					menuStr: that.modelJson
+					menuStr: that.menuJson
 				}).then(function (data) {
 					if (data.result) {
 						that.list();
-						var model = JSON.parse(that.modelJson)[0];
+						var model = JSON.parse(that.menuJson)[0];
 						var markList = JSON.parse(localStorage.getItem("markList"));
 						var menu = {
 							title: model.modelTitle,

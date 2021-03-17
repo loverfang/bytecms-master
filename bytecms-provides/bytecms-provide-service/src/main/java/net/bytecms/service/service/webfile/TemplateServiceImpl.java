@@ -1,6 +1,6 @@
 package net.bytecms.service.service.webfile;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.constants.DirectiveNameEnum;
 import net.bytecms.core.handler.CustomException;
@@ -31,19 +31,19 @@ import java.util.Map;
 public class TemplateServiceImpl implements TemplateService {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Override
     public TreeFileInfo treeTempFile() {
         TreeFileInfo treeFileInfo = new TreeFileInfo();
         treeFileInfo.setKey("-1").setTitle("根目录");
-        recursionTree(thinkCmsConfig.getSourceTempPath(), treeFileInfo);
+        recursionTree(byteCmsConfig.getSourceTempPath(), treeFileInfo);
         return treeFileInfo;
     }
 
     @Override
     public ApiResult getFileContent(String path) {
-        String filePath = thinkCmsConfig.getSourceTempPath() + File.separator + path;
+        String filePath = byteCmsConfig.getSourceTempPath() + File.separator + path;
         File file = new File(filePath);
         try {
             if (file.isFile()) {
@@ -72,7 +72,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public ApiResult deleteFile(String filePath) {
-        filePath = thinkCmsConfig.getSourceTempPath() + File.separator + filePath;
+        filePath = byteCmsConfig.getSourceTempPath() + File.separator + filePath;
         File file = new File(filePath);
         boolean res = true;
         if (file.exists()) {
@@ -98,7 +98,7 @@ public class TemplateServiceImpl implements TemplateService {
             templateDto.setFilePath("");
         }
         String fileName = templateDto.getIsDirectory()?templateDto.getFileName():templateDto.getFileName()+Constants.DEFAULT_HTML_SUFFIX;
-        String filePath=thinkCmsConfig.getSourceTempPath()+templateDto.getFilePath()+File.separator+fileName;
+        String filePath= byteCmsConfig.getSourceTempPath()+templateDto.getFilePath()+File.separator+fileName;
         File file = new File(filePath.replace("\\","/"));
         checkerFileIsExist(file);
         try {
@@ -139,7 +139,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     private File checkFileIsExist(String path) {
-        String filePath = thinkCmsConfig.getSourceTempPath() + File.separator + path;
+        String filePath = byteCmsConfig.getSourceTempPath() + File.separator + path;
         File file = new File(filePath);
         if (!(file.exists() && file.isFile())) {
             throw new CustomException(ApiResult.result(20000));
@@ -152,7 +152,7 @@ public class TemplateServiceImpl implements TemplateService {
         if (Checker.BeNotEmpty(treefiles)) {
             treeFileInfoDto.setChildren(treefiles);
             for (TreeFileInfo treeFileInfo : treeFileInfoDto.getChildren()) {
-                String relativePath = path.replace(thinkCmsConfig.getSourceTempPath(), "") + File.separator + treeFileInfo.getFileInfo().getFileName();
+                String relativePath = path.replace(byteCmsConfig.getSourceTempPath(), "") + File.separator + treeFileInfo.getFileInfo().getFileName();
                 treeFileInfo.setIsLeaf(!treeFileInfo.getFileInfo().isDirectory()).setRelativePath(relativePath);
                 if (treeFileInfo.getFileInfo().isDirectory()) {
                     String filePath = path + File.separator + treeFileInfo.getFileInfo().getFileName();
@@ -182,7 +182,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public void downZip(String path,HttpServletResponse response) {
-        String tempPath = thinkCmsConfig.getSourceTempPath();
+        String tempPath = byteCmsConfig.getSourceTempPath();
         if(Checker.BeNotBlank(path)){
             tempPath=tempPath+File.separator+path;
         }
@@ -191,7 +191,7 @@ public class TemplateServiceImpl implements TemplateService {
             throw  new CustomException(ApiResult.result(20015));
         }
         String timeStr= DateTimeFormatter.ofPattern(Constants.YMDHM).format(LocalDateTime.now());
-        String fileId= thinkCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
+        String fileId= byteCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
         File filePath=null;
         InputStream in = null;
         OutputStream out = null;
@@ -231,13 +231,13 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public void importFile(MultipartFile multipartFile, Integer type) {
-        String path = thinkCmsConfig.getSourceTempPath();
+        String path = byteCmsConfig.getSourceTempPath();
        String suffix= FileUtil.getSuffix(multipartFile.getOriginalFilename());
        if(!Constants.DEFAULT_ZIP_SUFFIX.equals(Constants.DOT+suffix)){
            throw new CustomException(ApiResult.result(20016));
        }
        if(type ==1){
-           path = thinkCmsConfig.getSourceFragmentFilePath();
+           path = byteCmsConfig.getSourceFragmentFilePath();
        }
         File toFile =null;
         try {

@@ -43,6 +43,27 @@
         });
     }
 
+    //tree: 树形结构， menuid: 已知节点属性，（代码中判断id相等）
+    function treeFindPath(tree, menuid) {
+        var path = [];
+        if (!tree) return [];
+        var forFn = function (tree, menuid) {
+            for (var i = 0; i < tree.length; i++) {
+                // 存放最后返回的内容,返回text集合
+                var data = tree[i];
+                path.push(data.id);
+                if (data.id === menuid) return path;
+                if (data.children) {
+                    const findChildren = forFn(data.children, menuid);
+                    if (findChildren) return findChildren
+                }
+                path.pop()
+            }
+        }
+        forFn(tree, menuid);
+        return path;
+    }
+
     /**
      * 后台返回的树形结果,调用此方法将其转换成含有父ID的普通数组
      * @param treeData 树形结构的数据
@@ -405,6 +426,7 @@
         transTree:transTree,
         childValidate:childValidate,
         moneyFormatter:moneyFormatter,
+        treeFindPath:treeFindPath,
         date: date,
         array: array,
         log: log,

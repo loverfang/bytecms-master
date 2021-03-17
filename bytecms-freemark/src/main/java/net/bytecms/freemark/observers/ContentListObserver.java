@@ -1,6 +1,6 @@
 package net.bytecms.freemark.observers;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.model.PageKeyWord;
 import net.bytecms.core.utils.ApiResult;
@@ -36,7 +36,7 @@ public class ContentListObserver extends AdapterObserver {
     ContentService contentService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     CmsCategoryAttributeService cmsCategoryAttributeService;
@@ -79,7 +79,7 @@ public class ContentListObserver extends AdapterObserver {
                     continue;
                 }
                 String fileName= i==1 ? "index": "index_"+i;
-                String staticFilePath = thinkCmsConfig.getSiteStaticFileRootPath()+ File.separator+categoryDto.getCode()+
+                String staticFilePath = byteCmsConfig.getSiteStaticFileRootPath()+ File.separator+categoryDto.getCode()+
                 File.separator+fileName+Constants.DEFAULT_HTML_SUFFIX;
                 CategoryPageHelp pageHelp = new CategoryPageHelp(categoryDto,i,pageCount);
                 if(Checker.BeNotNull(pageKeyWord)){

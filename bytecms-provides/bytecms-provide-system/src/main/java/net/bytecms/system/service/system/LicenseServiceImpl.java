@@ -5,7 +5,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import com.alibaba.fastjson.JSON;
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.model.LicenseProperties;
 import net.bytecms.core.model.PageDto;
@@ -33,7 +33,7 @@ import java.util.*;
 public class LicenseServiceImpl implements LicenseService {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     BaseRedisService baseRedisService;
@@ -41,7 +41,7 @@ public class LicenseServiceImpl implements LicenseService {
     @Override
     public PageDto<LicenseProperties> listPage(PageDto<LicenseProperties> roleDto) {
         List<LicenseProperties> propertiesList=new ArrayList<>();
-        String path=thinkCmsConfig.getLicensePath()+ SecurityConstants.LICENSE_NAME;
+        String path= byteCmsConfig.getLicensePath()+ SecurityConstants.LICENSE_NAME;
         if(Checker.BeNotBlank(path)){
             Map<String,Object> params=new LinkedHashMap<>(16);
             boolean exist=FileUtil.exist(path);
@@ -90,7 +90,7 @@ public class LicenseServiceImpl implements LicenseService {
     public ApiResult importLicense(MultipartFile file) {
             if(Checker.BeNotNull(file)){
                 checkFile(file);
-                String basePath= thinkCmsConfig.getLicensePath()+SecurityConstants.LICENSE_NAME;
+                String basePath= byteCmsConfig.getLicensePath()+SecurityConstants.LICENSE_NAME;
                 byte[] bs = new byte[1024];
                 InputStream inputStream = null;
                 OutputStream os = null;
@@ -129,7 +129,7 @@ public class LicenseServiceImpl implements LicenseService {
             LicenseProperties properties=JSON.parseObject(JSON.toJSONString(objectMap), LicenseProperties.class);
             apiResult.put("authorizeDesc",properties.getAuthorizeDesc());
         }else{
-            String path=thinkCmsConfig.getLicensePath()+SecurityConstants.LICENSE_NAME;
+            String path= byteCmsConfig.getLicensePath()+SecurityConstants.LICENSE_NAME;
             File file =new File(path);
             if(file.exists()){
                 Map<String,Object> params=licentsToMap(file);

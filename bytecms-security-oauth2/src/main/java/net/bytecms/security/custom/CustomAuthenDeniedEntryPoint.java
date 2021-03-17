@@ -25,7 +25,7 @@ public class CustomAuthenDeniedEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         log.error("-----------");
-                WebUtil.write(response, ApiResult.result(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
+        WebUtil.write(response, ApiResult.result(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 }
 

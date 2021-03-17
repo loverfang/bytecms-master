@@ -3,7 +3,7 @@ package net.bytecms.service.service.fragment;
 import com.alibaba.fastjson.JSON;
 import net.bytecms.core.annotation.CacheClear;
 import net.bytecms.core.annotation.FieldDefault;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.service.BaseServiceImpl;
@@ -47,7 +47,7 @@ import java.util.regex.Pattern;
 public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileModelDto, FragmentFileModel, FragmentFileModelMapper> implements FragmentFileModelService {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     FragmentAttributeService fragmentAttributeService;
@@ -60,7 +60,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
         TreeFileInfo treeFileInfo =new TreeFileInfo();
         treeFileInfo.setKey("-1").setTitle("根目录");
         Map<String,String> map= aliasMap();
-        recursionTree(thinkCmsConfig.getSourceFragmentFilePath(),treeFileInfo,map);
+        recursionTree(byteCmsConfig.getSourceFragmentFilePath(),treeFileInfo,map);
         return  treeFileInfo;
     }
 
@@ -81,7 +81,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
         if(Checker.BeNotEmpty(treefiles)){
             treeFileInfoDto.setChildren(treefiles);
             for (TreeFileInfo treeFileInfo : treeFileInfoDto.getChildren()) {
-                String relativePath = path.replace(thinkCmsConfig.getSourceFragmentFilePath(),Constants.BLANK) + File.separator+ treeFileInfo.getFileInfo().getFileName();
+                String relativePath = path.replace(byteCmsConfig.getSourceFragmentFilePath(),Constants.BLANK) + File.separator+ treeFileInfo.getFileInfo().getFileName();
                 treeFileInfo.setRelativePath(relativePath);
                 if (treeFileInfo.getFileInfo().isDirectory()) {
                     String filePath = path + File.separator+ treeFileInfo.getFileInfo().getFileName();
@@ -116,7 +116,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
 
     @Override
     public ApiResult getFileContent(String path) {
-        String filePath = thinkCmsConfig.getSourceFragmentFilePath()+File.separator+path;
+        String filePath = byteCmsConfig.getSourceFragmentFilePath()+File.separator+path;
         File file = new File(filePath);
         try {
             if (file.isFile()) {
@@ -147,7 +147,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
     @Override
     @CacheClear(key = "getFragmentFilePathByCode")
     public ApiResult deleteFile(String filePath) {
-        filePath = thinkCmsConfig.getSourceFragmentFilePath()+File.separator+filePath;
+        filePath = byteCmsConfig.getSourceFragmentFilePath()+File.separator+filePath;
         File file = new File(filePath);
         boolean res =true;
         if(file.exists()){
@@ -201,7 +201,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
         }
         String id=generateId();
         String fileName = id+Constants.DEFAULT_HTML_SUFFIX;
-        File file = new File(thinkCmsConfig.getSourceFragmentFilePath()+File.separator+v.getFilePath()+File.separator+fileName);
+        File file = new File(byteCmsConfig.getSourceFragmentFilePath()+File.separator+v.getFilePath()+File.separator+fileName);
         try {
             boolean res=file.createNewFile();
             if(res){ //文件创建成功保存数据库
@@ -239,7 +239,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
         if(Checker.BeNull(v.getFilePath())){
             v.setFilePath("");
         }
-        File file = new File(thinkCmsConfig.getSourceFragmentFilePath()+File.separator+v.getFilePath()+File.separator+v.getAlias());
+        File file = new File(byteCmsConfig.getSourceFragmentFilePath()+File.separator+v.getFilePath()+File.separator+v.getAlias());
         file.mkdir();
     }
 
@@ -329,14 +329,14 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
     public String getFragmentFilePathByCode(String code) {
          String fragmentPath= baseMapper.getFragmentFilePathByCode(code);
          if(Checker.BeNotBlank(fragmentPath)){
-             fragmentPath = thinkCmsConfig.getSourceFragmentFilePath().replace(thinkCmsConfig.getSourceTempPath(),"")+fragmentPath;
+             fragmentPath = byteCmsConfig.getSourceFragmentFilePath().replace(byteCmsConfig.getSourceTempPath(),"")+fragmentPath;
          }
          return fragmentPath;
     }
 
     @Override
     public void downZip(String path,HttpServletResponse response) {
-        String finalPath = thinkCmsConfig.getSourceFragmentFilePath();
+        String finalPath = byteCmsConfig.getSourceFragmentFilePath();
         if(Checker.BeNotBlank(path)){
             finalPath=finalPath+File.separator+path;
         }
@@ -345,7 +345,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
             throw  new CustomException(ApiResult.result(20015));
         }
         String timeStr= DateTimeFormatter.ofPattern(Constants.YMDHM).format(LocalDateTime.now());
-        String fileId= thinkCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
+        String fileId= byteCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
         File filePath=null;
         InputStream in = null;
         OutputStream out = null;
@@ -407,7 +407,7 @@ public class FragmentFileModelServiceImpl extends BaseServiceImpl<FragmentFileMo
     }
 
     private File checkFileIsExist(String path){
-        String filePath = thinkCmsConfig.getSourceFragmentFilePath()+File.separator+path;
+        String filePath = byteCmsConfig.getSourceFragmentFilePath()+File.separator+path;
         File file = new File(filePath);
         if(!(file.exists()&& file.isFile())){
             throw  new CustomException(ApiResult.result(20000));

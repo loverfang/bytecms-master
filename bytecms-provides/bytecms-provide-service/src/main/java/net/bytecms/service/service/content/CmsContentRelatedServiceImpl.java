@@ -6,7 +6,7 @@ import net.bytecms.service.dto.content.ContentDto;
 import net.bytecms.service.entity.content.CmsContentRelated;
 import net.bytecms.service.mapper.content.CmsContentRelatedMapper;
 import net.bytecms.core.annotation.CacheClear;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.service.BaseServiceImpl;
@@ -33,7 +33,7 @@ public class CmsContentRelatedServiceImpl extends BaseServiceImpl<CmsContentRela
 
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
 
     @CacheClear(keys = {"getRelatedByContentId"})

@@ -41,20 +41,23 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDto, RoleMenu, 
         Map<String, Object> param = new HashMap<>();
         int k = 0;
         List<MenuDto> menus = new ArrayList<>();
-        if (userId.equals("1")) {//查询所有的菜单
+        //查询所有的菜单
+        if (userId.equals("1")) {
             menus = menuService.listDtoByMap(param);
         } else {
             menus = menuService.selectMenuUid(userId);
         }
-        List<String> menuIds = baseMapper.selectMenus(roleId);//查询当前角色所拥有的菜单用于编辑时还原勾选状态
+        //查询当前角色所拥有的菜单用于编辑时还原勾选状态
+        List<String> menuIds = baseMapper.selectMenus(roleId);
         //param.put("role_id", roleId);
-        //List<String> menuIds=selectMenus(param);//查询当前角色所拥有的菜单用于编辑时还原勾选状态
+        //查询当前角色所拥有的菜单用于编辑时还原勾选状态
+        //List<String> menuIds=selectMenus(param);
         List<Tree<MenuDto>> trees = new ArrayList<Tree<MenuDto>>();
         for (MenuDto menu : menus) {
             String typeName = "";
-            if (menu.getType() == 0) typeName = "(目录)";
-            if (menu.getType() == 1) typeName = "(菜单)";
-            if (menu.getType() == 2) typeName = "(按钮)";
+            if (menu.getType() == 0) {typeName = "(目录)";}
+            if (menu.getType() == 1) {typeName = "(菜单)";}
+            if (menu.getType() == 2) {typeName = "(按钮)";}
             Tree<MenuDto> tree = new Tree<MenuDto>();
             tree.setKey(menu.getId());
             tree.setId(menu.getId());
@@ -71,7 +74,7 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDto, RoleMenu, 
             root.setId("-1");
             root.setParentId("0");
             root.setHasParent(false);
-            root.setHasChildren(true);
+            root.setHasChildrenNode(true);
             root.setChildren(topNodes);
             root.setTitle("顶级节点");
         }
@@ -98,11 +101,14 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDto, RoleMenu, 
     @Override
     public boolean assignMenu(RoleMenuDto roleMenuDto) {
         menuService.clearPermsCacheByUid(getUserId());
-        List<String> halfCheckedKeys = roleMenuDto.getHalfCheckedKeys();//半选中
-        List<String> onCheckKeys = roleMenuDto.getOnCheckKeys();//全选中
+        //半选中
+        List<String> halfCheckedKeys = roleMenuDto.getHalfCheckedKeys();
+        //全选中
+        List<String> onCheckKeys = roleMenuDto.getOnCheckKeys();
         String roleId = roleMenuDto.getRoleId();
         deleteByRoleId(roleId);
-        if (onCheckKeys.size() == 1 && onCheckKeys.get(0).equals("-1")) {//全部删除
+        //全部删除
+        if (onCheckKeys.size() == 1 && onCheckKeys.get(0).equals("-1")) {
             return true;
         } else {
             List<RoleMenuDto> halfList = filterList(halfCheckedKeys, roleId, 0);
@@ -117,7 +123,7 @@ public class RoleMenuServiceImpl extends BaseServiceImpl<RoleMenuDto, RoleMenu, 
     private List<RoleMenuDto> filterList(List<String> keys, String roleId, Integer halfChecked) {
         List<RoleMenuDto> roleMenus = new ArrayList<>();
         for (String menuId : keys) {
-            if (menuId.equals("-1")) continue;
+            if (menuId.equals("-1")) {continue;}
             RoleMenuDto roleMenu = new RoleMenuDto();
             roleMenu.setRoleId(roleId);
             roleMenu.setMenuId(menuId);

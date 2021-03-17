@@ -1,54 +1,57 @@
-<el-dialog id="form" :title="(addEditForm.modelIsMenu == 1) ? '菜单编辑' : '按钮编辑'" :visible.sync="dialogVisible" width="50%" v-cloak>
+<el-dialog id="form" :title="(addEditForm.type == 1 || addEditForm.type == 0) ? '菜单编辑' : '按钮编辑'" :visible.sync="dialogVisible" width="50%" v-cloak>
     <el-form ref="addEditForm" :model="addEditForm" :rules="rules" label-width="110px" size="mini">
-        <el-form-item  label="标题" prop="modelTitle">
-            <el-input v-model="addEditForm.modelTitle" placeholder="请输入标题"></el-input>
+
+        <el-form-item  label="菜单名称" prop="name">
+            <el-input v-model="addEditForm.name" placeholder="请输入标题"></el-input>
         </el-form-item>
-        <el-form-item  label="父级菜单" prop="modelId">
+
+        <el-form-item label="菜单类型" prop="type">
+            <el-radio-group v-model="addEditForm.type">
+                <el-radio :label="0">目录</el-radio>
+                <el-radio :label="1">菜单</el-radio>
+                <el-radio :label="2">按钮</el-radio>
+            </el-radio-group>
+        </el-form-item>
+
+        <el-form-item  label="父级菜单" prop="parentId">
             <ms-tree-select ref="treeselect"
                     :props="props"
-                    :options="modelList"
-                    :value="addEditForm.modelId"
+                    :options="menuList"
+                    :value="addEditForm.parentId"
                     :clearable="isClearable"
                     :accordion="isAccordion"
                     @get-value="getValue($event)"></ms-tree-select>
         </el-form-item>
-        <el-form-item prop="modelIsMenu">
-            <template slot='label'>是否为菜单
+
+        <el-form-item  label="图标" prop="icon">
+            <ms-icon v-model="addEditForm.icon"></ms-icon>
+        </el-form-item>
+
+        <el-form-item label="权限标识" prop="perms">
+            <template slot='label'>权限标识
                 <el-popover placement="top-start" title="提示" trigger="hover" width="400">
                     <template slot-scope="slot">
-                        导航连接为菜单，页面中的功能按钮为非菜单
-                    </template>
-                    <i class="el-icon-question" slot="reference"></i>
-                </el-popover>
-            </template>        
-            <el-radio-group v-model="addEditForm.modelIsMenu">
-                <el-radio :label="1">是</el-radio>
-                <el-radio :label="0">否</el-radio>
-            </el-radio-group>
-        </el-form-item>
-        <el-form-item  label="图标" prop="modelIcon" v-if="addEditForm.modelIsMenu == 1">
-            <ms-icon v-model="addEditForm.modelIcon"></ms-icon>
-        </el-form-item>
-        <el-form-item prop="modelUrl">
-            <template slot='label'>{{(addEditForm.modelIsMenu==1) ? '链接地址' : '权限标识'}}
-                <el-popover placement="top-start" title="提示" trigger="hover" width="400">
-                    <template slot-scope="slot">
-                        <span v-if="addEditForm.modelIsMenu==1">
-                            导航地址，如“model/index.do”
-                        </span>
-                        <span v-else>
-                            按钮的权限标识，推荐格式：业务名:update,业务名:del,业务名:view，具体使用参考：<a href="http://doc.ms.mingsoft.net/dev-guide/" target="_blank">开发手册</a>
-                        </span>
+                        按钮的权限标识，推荐格式：业务名:update,业务名:del等
                     </template>
                     <i class="el-icon-question" slot="reference"></i>
                 </el-popover>
             </template>
-            <el-input v-model="addEditForm.modelUrl" :placeholder="(addEditForm.modelIsMenu==1) ? '请输入链接地址' : '请输入权限标识'"></el-input>
+            <el-input v-model="addEditForm.perms" placeholder="请输入权限标识"></el-input>
         </el-form-item>
-<#--        <el-form-item  label="模块编码" prop="modelCode">-->
-<#--            <el-input v-model="addEditForm.modelCode" placeholder="请输入模块编码"></el-input>-->
-<#--        </el-form-item>-->
-        <el-form-item prop="modelSort">
+
+        <el-form-item prop="API地址" prop="url">
+            <template slot='label'>链接地址
+                <el-popover placement="top-start" title="提示" trigger="hover" width="400">
+                    <template slot-scope="slot">
+                        导航地址，如“model/index.do”
+                    </template>
+                    <i class="el-icon-question" slot="reference"></i>
+                </el-popover>
+            </template>
+            <el-input v-model="addEditForm.url" placeholder="请输入链接地址"></el-input>
+        </el-form-item>
+
+        <el-form-item prop="orderNum">
             <template slot='label'>排序
                 <el-popover placement="top-start" title="提示" trigger="hover" width="400">
                     <template slot-scope="slot">
@@ -57,26 +60,9 @@
                     <i class="el-icon-question" slot="reference"></i>
                 </el-popover>
             </template>
-            <el-input v-model.number="addEditForm.modelSort" maxlength="11" placeholder="请输入排序"></el-input>
+            <el-input v-model.number="addEditForm.orderNum" maxlength="11" placeholder="请输入排序"></el-input>
         </el-form-item>
-        <el-form-item  prop="isChild">
-            <template slot='label'>系统扩展
-                <el-popover placement="top-start" title="提示" trigger="hover" width="400">
-                    <template slot-scope="slot">
-                        可扩展到多个业务模块使用，<br/>
-                        例如：业务A定义了一些菜单，业务B也定义了菜单，一般我们会选择两个业务中都需要开发菜单管理功能<br/>
-                        就可以通过这个参数来过滤，避免业务A出现业务B中定义的菜单数据，也减少了重复开发菜单的工作<br/>
-                    </template>
-                    <i class="el-icon-question" slot="reference"></i>
-                </el-popover>
-            </template>
-            <el-input v-model="addEditForm.isChild"
-                      :disabled="false"
-                      :style="{width:  '100%'}"
-                      :clearable="true"
-                      placeholder="请输入系统扩展">
-            </el-input>
-        </el-form-item>
+
     </el-form>
     <div slot="footer">
         <el-button size="mini" @click="dialogVisible = false">取 消</el-button>
@@ -92,74 +78,49 @@
                 // 可清空（可选）
                 isAccordion: true,
                 // 可收起（可选）
-                modelTitle: '',
+                name: '',
                 props: {
                     // 配置项（必选）
                     value: 'id',
-                    label: 'modelTitle',
+                    label: 'name',
                     children: 'children' // disabled:true
-
                 },
-                modelList: [],
+                menuList: [],
                 //菜单数据
-                modeldata: [],
+                menuData: [],
                 saveDisabled: false,
                 dialogVisible: false,
                 //表单数据
                 addEditForm: {
                     id: 0,
-                    modelId: 0,
-                    modelTitle: '',
-                    modelIcon: '',
-                    modelUrl: '',
-                    isChild: '',
-                    modelCode:'',
-                    modelSort: 0,
-                    modelIsMenu: 1
+                    type: 0,      // 类型   0：目录   1：菜单   2：按钮 //请输入菜单类型！
+                    parentId: '',   // 父菜单ID
+                    name: '',       // 请输入至少三个字符的菜单名称！
+                    perms: '',      // 请输入至少四个字符的规则描述！
+                    url: '',        // API接口, 请输入至少四个字符的规则描述！
+                    icon:'',
+                    orderNum:'',    // 菜单顺序
                 },
                 rules: {
-                    modelTitle: [{
-                        required: true,
-                        message: '请输入标题',
-                        trigger: 'blur'
-                    }, {
-                        min: 1,
-                        max: 20,
-                        message: '长度不能超过20个字符',
-                        trigger: 'change'
-                    }],
-                    modelUrl: [{
-                        min: 0,
-                        max: 100,
-                        message: '长度不能超过100个字符',
-                        trigger: 'change'
-                    }],
-                    // modelCode:[{min: 0, max: 20, message: '长度不能超过20个字符', trigger: 'change'}],
-                    modelSort: [{
-                        type: 'number',
-                        message: '排序必须为数字值'
-                    }],
-                    isChild: [{
-                        min: 0,
-                        max: 100,
-                        message: '长度不能超过100个字符',
-                        trigger: 'change'
-                    }]
+                    name: [{ required: true, message: '请输入标题', trigger: 'blur' }, {min: 1, max: 20, message: '长度不能超过20个字符', trigger: 'change'}],
+                    type: [{ required: true, message: '菜单类型不能为空', trigger: 'blur' }],
+                    parentId:[{ required: true, message: '请选择父菜单', trigger: 'change'}],
+                    orderNum: [{ required: true, message: '排序数字不能为空', trigger: 'blur'}, { type: 'number', message: '排序必须为数字值' }],
                 }
             };
         },
         watch: {
-            'dialogVisible': function (n, o) {
+            dialogVisible: function (n, o) {
                 if (!n) {
                     this.$refs.addEditForm.resetFields();
                 }
             },
-            'modeldata': function (n, o) {
+            menuData: function (n, o) {
                 if (n) {
-                    this.modelList.push({
-                        modelTitle: '顶级菜单',
+                    this.menuList.push({
+                        name: '顶级菜单',
                         id: 0,
-                        children: this.modeldata
+                        children: this.menuData
                     });
                 }
             }
@@ -167,56 +128,52 @@
         methods: {
             open: function (id) {
                 this.addEditForm.id = 0;
-                this.addEditForm.modelId = '';
-                this.addEditForm.modelCode = '';
-
+                this.addEditForm.parentId = '';
+                // 点击非新增时的任意菜单
                 if (id > 0) {
+                    // 加载菜单详情进行展示
                     this.get(id);
                 }
-
                 this.$nextTick(function () {
                     this.dialogVisible = true;
                 });
             },
+
             save: function () {
                 var that = this;
-                var url = ms.manager + "/model/save.do";
+                var url = ms.manager + "/menu/save";
 
                 if (that.addEditForm.id > 0) {
-                    url = ms.manager + "/model/update.do";
-                } //按钮没有图标
+                    url = ms.manager + "/menu/update";
+                }else{
+                    // ID=0说明是新增,不需要设定id值
+                    delete this.addEditForm.id;
+                }
 
-
-                if (that.addEditForm.modelIsMenu == 0) {
-                    that.addEditForm.modelIcon = '';
+                if (that.addEditForm.type == 2) {
+                    that.addEditForm.icon = '';
                 }
 
                 that.$refs.addEditForm.validate(function (valid) {
                     if (valid) {
                         that.saveDisabled = true;
-
-                        if (!that.addEditForm.modelId) {
-                            delete that.addEditForm.modelId;
+                        if (!that.addEditForm.parentId) {
+                            delete that.addEditForm.id;
                         }
 
+                        debugger;
                         var data = JSON.parse(JSON.stringify(that.addEditForm));
+                        // 删除某些属性
                         delete data.modelChildList;
+
                         ms.http.post(url, data).then(function (data) {
                             if (data.result) {
-                                that.$notify({
-                                    title: '成功',
-                                    message: '保存成功',
-                                    type: 'success'
-                                });
+                                that.$notify({ title: '成功', message: '保存成功', type: 'success' });
                                 that.saveDisabled = false;
                                 that.dialogVisible = false;
-                                window.location.href = ms.manager + "/model/index.do";
+                                window.location.href = ms.manager + "page/menu";
                             } else {
-                                that.$notify({
-                                    title: '失败',
-                                    message: data.msg,
-                                    type: 'warning'
-                                });
+                                that.$notify({ title: '失败', message: data.msg, type: 'warning' });
                                 that.saveDisabled = false;
                             }
                         });
@@ -225,54 +182,51 @@
                     }
                 });
             },
+
             getValue: function (data) {
-                if (data.node.modelParentIds != null) {
-                    var parentIndex = data.node.modelParentIds.split(",").indexOf(this.addEditForm.id);
+
+                // 不能把自己的子菜单作为父菜单
+                if (data.node.parentId != null) {
+                    // 获得选中节点的祖先节点,包含自身节点
+                    console.log(ms.util.treeFindPath(this.menuList, data.node.id))
+                    let menuParentIds = ms.util.treeFindPath(this.menuList, data.node.id);
+                    var parentIndex = menuParentIds.join(",").split(",").indexOf(this.addEditForm.id);
                     if (parentIndex > -1) {
-                        this.$notify({
-                            title: '提示',
-                            message: '不能把自身的子菜单作为父级菜单',
-                            type: 'info'
-                        });
+                        this.$notify({title: '提示', message: '不能把自身的子菜单作为父级菜单', type: 'info' });
                         return false;
                     }
                 }
-                if (data.node.id == this.addEditForm.id) {
-                    this.$notify({
-                        title: '提示',
-                        message: '不能把自身作为父级菜单',
-                        type: 'info'
-                    });
+
+                // 自己不能是自己的父菜单
+                if (this.addEditForm.id != 0 && data.node.id == this.addEditForm.id) {
+                    this.$notify({ title: '提示', message: '不能把自身作为父级菜单', type: 'info'});
                     return false;
                 }
-                if (data.node.modelIsMenu == 0) {
-                    this.$notify({
-                        title: '提示',
-                        message: '不能将功能按钮添加为菜单',
-                        type: 'info'
-                    });
+
+                //按钮不能作为父菜单即按钮没有层级关系
+                if (data.node.type == 2) {
+                    this.$notify({title: '提示', message: '不能将功能按钮添加为菜单', type: 'info' });
                 } else {
-                    this.addEditForm.modelId = data.node.id;
+                    this.addEditForm.parentId = data.node.id;
                     this.$refs.treeselect.valueId = data.node[this.props.value];
                     this.$refs.treeselect.valueTitle = data.node[this.props.label];
                     data.dom.blur();
                 }
             },
-            //获取当前任务
+
+            //获取当前菜单
             get: function (id) {
                 var that = this;
-                ms.http.get(ms.manager + "/model/get.do", {
-                    id: id
-                }).then(function (data) {
-                    if (data.result) {
-                        that.addEditForm = data.data.model;
-                        delete that.addEditForm.modelDatetime;
+                ms.http.get(ms.manager + "/menu/info", {id: id}).then(function (data) {
+                    if (data.res) {
+                        that.addEditForm = data.res;
                     }
                 }).catch(function (err) {
                     console.log(err);
                 });
             }
         },
+
         created: function () {}
     });
 </script>

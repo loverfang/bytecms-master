@@ -173,7 +173,6 @@
                     if (valid) {
                         that.loading = true;
                         ms.http.post(ms.manager + "/oauth/token?grant_type=password&client_id=app&client_secret=123456&username="+that.form.managerName+"&password="+that.form.managerPassword).then(function (result) {
-                            debugger;
                             if(0 === result.code){
                                 // 保存用户名密码
                                 // that.rememberPass?localStorage.setItem("managerName",that.form.managerName):localStorage.setItem('name',"");

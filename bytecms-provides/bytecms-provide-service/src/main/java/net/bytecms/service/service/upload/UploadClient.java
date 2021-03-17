@@ -1,6 +1,6 @@
 package net.bytecms.service.service.upload;
 
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.BaseContextKit;
 import net.bytecms.core.utils.FileUtil;
@@ -20,7 +20,7 @@ public abstract class UploadClient {
     SysResourceService resourceService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     protected String accessKey;
 

@@ -2,7 +2,7 @@ package net.bytecms.security.custom;
 
 
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.utils.Checker;
 import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,12 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 public class CustomJwtTokenStore extends JwtTokenStore {
+
     @Autowired
     BaseRedisService baseRedisService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     public CustomJwtTokenStore(JwtAccessTokenConverter jwtTokenEnhancer) {
         super(jwtTokenEnhancer);
@@ -24,8 +25,7 @@ public class CustomJwtTokenStore extends JwtTokenStore {
 
     @Override
     public void storeAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication) {
-        if (!this.thinkCmsConfig.getAllowMultiLogin().booleanValue() &&
-                authentication.getPrincipal() instanceof CustomJwtUser) {
+        if (!byteCmsConfig.getAllowMultiLogin().booleanValue() && authentication.getPrincipal() instanceof CustomJwtUser) {
             CustomJwtUser customJwtUser = (CustomJwtUser)authentication.getPrincipal();
             String userId = customJwtUser.getUserId();
             if (Checker.BeNotBlank(userId).booleanValue()) {

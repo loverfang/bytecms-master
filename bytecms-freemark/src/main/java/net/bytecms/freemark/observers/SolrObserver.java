@@ -3,7 +3,7 @@ package net.bytecms.freemark.observers;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import net.bytecms.core.api.BaseSolrService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.SolrCoreEnum;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.utils.ApiResult;
@@ -44,7 +44,7 @@ public class SolrObserver extends AdapterObserver {
     SysResourceService resourceService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     BaseSolrService baseSolrService;

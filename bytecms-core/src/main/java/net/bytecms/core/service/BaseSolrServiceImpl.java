@@ -1,7 +1,7 @@
 package net.bytecms.core.service;
 
 import net.bytecms.core.api.BaseSolrService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.SolrCoreEnum;
 import net.bytecms.core.iterator.BeanPropertyBox;
 import net.bytecms.core.iterator.SolrIterator;
@@ -29,7 +29,7 @@ import java.util.*;
 public class BaseSolrServiceImpl implements BaseSolrService {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
     /**
      * q:query input，要查询的字符串，必须填写
      *
@@ -95,7 +95,7 @@ public class BaseSolrServiceImpl implements BaseSolrService {
         //获取高亮显示的结果, 高亮显示的结果和查询结果是分开放的
         Map<String, Map<String, List<String>>> highlight = queryResponse.getHighlighting();
         List<SolrDocument> res = new ArrayList<>();
-        String domain = thinkCmsConfig.getSiteDomain();
+        String domain = byteCmsConfig.getSiteDomain();
         for (SolrDocument result : results) { // 将高亮结果合并到查询结果中
             highlight.forEach((k, v) -> {
                 if (result.get("id").equals(k)){
@@ -228,7 +228,7 @@ public class BaseSolrServiceImpl implements BaseSolrService {
 
 
     private boolean isStrtSolr(){
-        return thinkCmsConfig.getStartSolr();
+        return byteCmsConfig.getStartSolr();
     }
 
 

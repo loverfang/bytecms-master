@@ -1,7 +1,7 @@
 package net.bytecms.web.controller.webapi;
 
 import net.bytecms.service.api.content.ContentService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.utils.HttpContextUtils;
 import net.bytecms.web.controller.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +28,12 @@ import java.io.IOException;
 public class TongJiController extends BaseController<ContentService> {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @GetMapping("goToBaiDuTj")
     public void goToBaiDuTj(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean mobile=HttpContextUtils.ckIsMobile();
-        String url = mobile? thinkCmsConfig.getBaiDuTongjiUrlM(): thinkCmsConfig.getBaiDuTongJiUrl();
+        String url = mobile? byteCmsConfig.getBaiDuTongjiUrlM(): byteCmsConfig.getBaiDuTongJiUrl();
         response.sendRedirect(url);
     }
 

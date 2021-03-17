@@ -5,7 +5,7 @@ import com.github.tobato.fastdfs.service.AppendFileStorageClient;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.google.common.collect.Lists;
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -36,19 +36,19 @@ public class LocalClient extends UploadClient {
     AppendFileStorageClient appendFileStorageClient;
 
     @Autowired
-    private ThinkCmsConfig thinkCmsConfig;
+    private ByteCmsConfig byteCmsConfig;
 
 
 
     @Override
     public ApiResult uploadFile(MultipartFile multipartFile) {
         try {
-            String root=thinkCmsConfig.getFileResourcePath();
+            String root= byteCmsConfig.getFileResourcePath();
             String fileName = getFileName(multipartFile);
             FileUtil.upload(multipartFile.getBytes(),root+getFilePath(multipartFile),root+fileName,false);
             Map<String,Object> uploadRes = new HashMap<>();
             uploadRes.put("filePath",fileName);
-            uploadRes.put("fileFullPath", thinkCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileName);
+            uploadRes.put("fileFullPath", byteCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileName);
             uploadRes.put("group",getGroup(multipartFile));
             uploadRes.put("path",fileName);
             uploadRes.put("fileName",multipartFile.getOriginalFilename());
@@ -63,7 +63,7 @@ public class LocalClient extends UploadClient {
     public ApiResult keepUploadFile(Chunk chunk) {
         Map<String,Object> params=new HashMap<>();
         MultipartFile multipartFile=chunk.getFile();
-        String root=thinkCmsConfig.getFileResourcePath();
+        String root= byteCmsConfig.getFileResourcePath();
         try {
             if(!checkIsUpload(chunk)){
                 String fileName = getFileName(multipartFile);
@@ -74,7 +74,7 @@ public class LocalClient extends UploadClient {
                     params.put("fileName",multipartFile.getOriginalFilename());
                     params.put("filePath",fileName);
                     params.put("path",fileName);
-                    params.put("fileFullPath", thinkCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileName);
+                    params.put("fileFullPath", byteCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileName);
                     params.put("group",getGroup(multipartFile));
                     params.put("finshed",true);
                 }else{
@@ -94,7 +94,7 @@ public class LocalClient extends UploadClient {
                                 params.put("fileName",multipartFile.getOriginalFilename());
                                 params.put("filePath",fileNameObj.toString());
                                 params.put("path",fileNameObj.toString());
-                                params.put("fileFullPath", thinkCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileNameObj.toString());
+                                params.put("fileFullPath", byteCmsConfig.getServerApi()+Constants.localtionUploadPattern+fileNameObj.toString());
                                 params.put("group",getGroup(multipartFile));
                             }
                         }
@@ -159,7 +159,7 @@ public class LocalClient extends UploadClient {
         if(Checker.BeNotNull(resourceDto)){
             String filePath=resourceDto.getFilePath();
             if(Checker.BeNotBlank(filePath)){
-                filePath=thinkCmsConfig.getFileResourcePath()+File.separator+filePath;
+                filePath= byteCmsConfig.getFileResourcePath()+File.separator+filePath;
                 cn.hutool.core.io.FileUtil.del(filePath);
                 deleteFileByUid(uid);
                 return ApiResult.result(filePath);

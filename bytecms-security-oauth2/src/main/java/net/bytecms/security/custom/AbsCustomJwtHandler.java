@@ -6,7 +6,7 @@ package net.bytecms.security.custom;
  * @Version 1.0
  */
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.BaseContextKit;
@@ -27,7 +27,7 @@ public abstract class AbsCustomJwtHandler {
     BaseRedisService<String, Object> baseRedisService;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     public abstract void handlerJwtToken(Authentication paramAuthentication, JwtTokenStore paramJwtTokenStore) throws CustomException;
 
@@ -47,7 +47,7 @@ public abstract class AbsCustomJwtHandler {
         String name = Checker.BeNull(details.get("name")) ? null : details.get("name").toString();
         Collection<String> roleSigns = Checker.BeNull(details.get("role_signs")) ? new HashSet<>() : (Collection<String>)details.get("role_signs");
         ckparameters(new String[] { uid });
-        if (!this.thinkCmsConfig.getAllowMultiLogin().booleanValue()) {
+        if (!byteCmsConfig.getAllowMultiLogin().booleanValue()) {
             checkAllowMulitLogin(uid, tokenValue);
         }
         BaseContextKit.setUserId(uid);
@@ -69,7 +69,7 @@ public abstract class AbsCustomJwtHandler {
 
     private void checkAllowMulitLogin(String userId, String tokenValue) {
         if (Checker.BeNotBlank(userId).booleanValue() && Checker.BeNotBlank(tokenValue).booleanValue()) {
-            Object redisTokenValue = this.baseRedisService.get("allow_multi_login_key:" + userId);
+            Object redisTokenValue = baseRedisService.get("allow_multi_login_key:" + userId);
             if (Checker.BeNotNull(redisTokenValue)) {
                 boolean singleLogin = tokenValue.equals(redisTokenValue.toString());
                 if (!singleLogin) {
@@ -80,11 +80,11 @@ public abstract class AbsCustomJwtHandler {
     }
 
     private void handAppToken(String tokenValue) {
-        Boolean hasKey = this.baseRedisService.hasKey(tokenValue);
+        Boolean hasKey = baseRedisService.hasKey(tokenValue);
         if (!hasKey.booleanValue()) {
             throw new CustomException(ApiResult.result(7000));
         }
-        this.baseRedisService.setSetExpireTime(tokenValue, SecurityConstants.expireTime);
+        baseRedisService.setSetExpireTime(tokenValue, SecurityConstants.expireTime);
     }
 }
 

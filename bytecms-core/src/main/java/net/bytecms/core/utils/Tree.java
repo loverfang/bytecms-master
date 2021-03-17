@@ -20,7 +20,6 @@ public class Tree<T> {
 	/**
 	 * 节点ID
 	 */
-
 	private String key;
 
 	private String id;
@@ -65,7 +64,7 @@ public class Tree<T> {
 	/**
 	 * 是否有子节点
 	 */
-	private boolean hasChildren = false;
+	private boolean hasChildrenNode = false;
 
 
 	public Tree(String id, String name, Map<String, Object> state, boolean checked, Map<String, Object> attributes,
@@ -77,7 +76,7 @@ public class Tree<T> {
 		this.attributes = attributes;
 		this.children = children;
 		this.hasParent = isParent;
-		this.hasChildren = isChildren;
+		this.hasChildrenNode = isChildren;
 		this.parentId = parentID;
 	}
 
@@ -87,7 +86,6 @@ public class Tree<T> {
 
 	@Override
 	public String toString() {
-
 		return JSON.toJSONString(this);
 	}
 }

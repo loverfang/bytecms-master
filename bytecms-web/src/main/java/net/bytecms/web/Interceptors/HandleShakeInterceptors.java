@@ -73,12 +73,13 @@ public class HandleShakeInterceptors implements HandshakeInterceptor {
 
     private Principal ckToken(String tokenValue) {
         if (Checker.BeNotBlank(tokenValue)) {
-            OAuth2Authentication oauth=tokenStore.readAuthentication(tokenValue);
+            OAuth2Authentication oauth = tokenStore.readAuthentication(tokenValue);
             Map<String, Object> details = (Map<String, Object>)oauth.getDetails();
             String userId = Checker.BeNull(details.get(MinAppConstant.USERID)) ? null : details.get(MinAppConstant.USERID).toString();
             String userName = Checker.BeNull(details.get(SecurityConstants.USER_NAME)) ? null : details.get(SecurityConstants.USER_NAME).toString();
+
             //设置当前访问器的认证用户
-            CustomSocketPrincipal customPrincipal=new CustomSocketPrincipal(userId,userName);
+            CustomSocketPrincipal customPrincipal =  new CustomSocketPrincipal(userId, userName);
             return customPrincipal;
         }
         return null;

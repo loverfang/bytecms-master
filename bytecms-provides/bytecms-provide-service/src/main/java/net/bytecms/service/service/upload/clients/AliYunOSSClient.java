@@ -6,7 +6,7 @@ import com.aliyun.oss.model.AppendObjectResult;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.google.common.collect.Lists;
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -27,18 +27,18 @@ public class AliYunOSSClient extends UploadClient {
     private OSS ossClient ;
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Autowired
     BaseRedisService baseRedisService;
 
     @PostConstruct
     public void init(){
-        accessKey = thinkCmsConfig.getOss().getAccessKey();
-        secretKey = thinkCmsConfig.getOss().getSecretKey();
-        endpoint=thinkCmsConfig.getOss().getEndpoint();
-        bucket = thinkCmsConfig.getOss().getBucket();
-        prefix=thinkCmsConfig.getOss().getPrefix();
+        accessKey = byteCmsConfig.getOss().getAccessKey();
+        secretKey = byteCmsConfig.getOss().getSecretKey();
+        endpoint= byteCmsConfig.getOss().getEndpoint();
+        bucket = byteCmsConfig.getOss().getBucket();
+        prefix= byteCmsConfig.getOss().getPrefix();
         conf = new ClientBuilderConfiguration();
     }
 

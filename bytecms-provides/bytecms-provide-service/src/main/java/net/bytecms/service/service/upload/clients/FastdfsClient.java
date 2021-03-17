@@ -6,7 +6,7 @@ import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import com.google.common.collect.Lists;
 import net.bytecms.core.annotation.DefaultUploadClient;
 import net.bytecms.core.api.BaseRedisService;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.utils.ApiResult;
 import net.bytecms.core.utils.Checker;
@@ -34,7 +34,7 @@ public class FastdfsClient extends UploadClient {
     AppendFileStorageClient appendFileStorageClient;
 
     @Autowired
-    private ThinkCmsConfig thinkCmsConfig;
+    private ByteCmsConfig byteCmsConfig;
 
     @Override
     public ApiResult uploadFile(MultipartFile multipartFile) {
@@ -44,7 +44,7 @@ public class FastdfsClient extends UploadClient {
             if(Checker.BeNotNull(storePath) && Checker.BeNotBlank(storePath.getPath())){
                 Map<String,String> uploadRes = new HashMap<>();
                 uploadRes.put("filePath",storePath.getFullPath());
-                uploadRes.put("fileFullPath", thinkCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
+                uploadRes.put("fileFullPath", byteCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
                 uploadRes.put("group",storePath.getGroup());
                 uploadRes.put("path",storePath.getPath());
                 uploadRes.put("fileName",multipartFile.getOriginalFilename());
@@ -73,7 +73,7 @@ public class FastdfsClient extends UploadClient {
                     if(isLastChunk){
                         params=new HashMap<>(16);
                         params.put("filePath",storePath.getFullPath());
-                        params.put("fileFullPath", thinkCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
+                        params.put("fileFullPath", byteCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
                         params.put("group",storePath.getGroup());
                         params.put("path",storePath.getPath());
                     }
@@ -116,7 +116,7 @@ public class FastdfsClient extends UploadClient {
         if(chunk.getChunkNumber()==1 && Checker.BeNotNull(storePath)){
             Map<String,String> params=new HashMap<>(16);
             params.put("filePath",storePath.getFullPath());
-            params.put("fileFullPath", thinkCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
+            params.put("fileFullPath", byteCmsConfig.getSiteFdfsDomain()+ File.separator+storePath.getFullPath());
             params.put("group",storePath.getGroup());
             params.put("path",storePath.getPath());
             baseRedisService.set(pathKey,params);

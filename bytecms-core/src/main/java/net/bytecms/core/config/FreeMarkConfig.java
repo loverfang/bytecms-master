@@ -27,9 +27,9 @@ import java.io.InputStream;
 public class FreeMarkConfig {
 
     @Bean
-    public freemarker.template.Configuration configuration(ThinkCmsConfig thinkCmsConfig) throws IOException, TemplateException {
+    public freemarker.template.Configuration configuration(ByteCmsConfig byteCmsConfig) throws IOException, TemplateException {
         freemarker.template.Configuration configuration = new freemarker.template.Configuration(freemarker.template.Configuration.VERSION_2_3_28);
-        File file = initDirectory(thinkCmsConfig);
+        File file = initDirectory(byteCmsConfig);
         configuration.setDirectoryForTemplateLoading(file);
         configuration.setObjectWrapper(new DefaultObjectWrapper(freemarker.template.Configuration.VERSION_2_3_28));
         configuration.setDefaultEncoding(Constants.DEFAULT_CHARSET_NAME); //这个一定要设置，不然在生成的页面中 会乱码
@@ -37,11 +37,11 @@ public class FreeMarkConfig {
         return configuration;
     }
 
-    private File initDirectory(ThinkCmsConfig thinkCmsConfig)  {
+    private File initDirectory(ByteCmsConfig byteCmsConfig)  {
         File root=null;
-        String [] paths=new String[]{thinkCmsConfig.getSourceRootPath(), thinkCmsConfig.getSourceFragmentFilePath(),
-        thinkCmsConfig.getSourceTempPath(), thinkCmsConfig.getSiteStaticFileRootPath(),thinkCmsConfig.getLicensePath(),
-        thinkCmsConfig.getFileResourcePath()
+        String [] paths=new String[]{byteCmsConfig.getSourceRootPath(), byteCmsConfig.getSourceFragmentFilePath(),
+        byteCmsConfig.getSourceTempPath(), byteCmsConfig.getSiteStaticFileRootPath(), byteCmsConfig.getLicensePath(),
+        byteCmsConfig.getFileResourcePath()
         };
         int i=0;
         for(String path: paths){
@@ -57,14 +57,14 @@ public class FreeMarkConfig {
             i+=1;
         }
         try {
-            fileMove(thinkCmsConfig);
+            fileMove(byteCmsConfig);
         }catch (IOException e){
             log.warn(e.getMessage());
         }
         return root;
     }
 
-    private void fileMove(ThinkCmsConfig thinkCmsConfig) throws IOException {
+    private void fileMove(ByteCmsConfig byteCmsConfig) throws IOException {
         Resource resource = new ClassPathResource("license.dat");
         if(!resource.exists()){
             throw new IOException("授权文件不存在!");
@@ -75,7 +75,7 @@ public class FreeMarkConfig {
         } catch (IOException e) {
            throw new IOException("授权文件不存在!");
         }
-        File file =new File(thinkCmsConfig.getLicensePath()+ SecurityConstants.LICENSE_NAME);
+        File file =new File(byteCmsConfig.getLicensePath()+ SecurityConstants.LICENSE_NAME);
         if(!FileUtil.exist(file)){
             FileUtil.writeFromStream(inputStream,file);
         }

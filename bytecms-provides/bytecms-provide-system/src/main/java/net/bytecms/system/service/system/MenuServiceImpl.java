@@ -152,19 +152,21 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuDto, Menu, MenuMapper> 
     @Override
     public boolean delete(String id) {
         MenuDto menu = getByPk(id);
-        if (menu.getType() == 0 || menu.getType() == 1) {//目录或者菜单需要递归删除
+        //目录或者菜单需要递归删除
+        if (menu.getType() == 0 || menu.getType() == 1) {
             List<String> ids = new ArrayList<>();
             ids.add(id);
             selectChilden(id, ids);
             boolean f = super.removeByIds(ids);
-            if (f) {//删除菜单或者目录成功时将删除，角色-菜单关系表
+            //删除菜单或者目录成功时将删除，角色-菜单关系表
+            if (f) {
                 for (String menuId : ids) {
                     roleMenuService.deleteByMenuId(menuId);
                 }
                 return true;
             }
-        } else if (menu.getType() == 2)//按钮
-        {
+        } else if (menu.getType() == 2){
+            //按钮
             return super.removeById(id);
         }
         return false;

@@ -1,7 +1,7 @@
 package net.bytecms.service.service.webfile;
 
 import com.google.common.collect.Lists;
-import net.bytecms.core.config.ThinkCmsConfig;
+import net.bytecms.core.config.ByteCmsConfig;
 import net.bytecms.core.constants.Constants;
 import net.bytecms.core.handler.CustomException;
 import net.bytecms.service.api.webfile.WebStaticFileService;
@@ -26,11 +26,11 @@ import java.util.List;
 public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Autowired
-    ThinkCmsConfig thinkCmsConfig;
+    ByteCmsConfig byteCmsConfig;
 
     @Override
     public List<FileInfo> listPage(String path, String parentPath) {
-        String basePath= thinkCmsConfig.getSiteStaticFileRootPath();
+        String basePath= byteCmsConfig.getSiteStaticFileRootPath();
         String newPath= Checker.BeNotBlank(path)?basePath+path:basePath;
         List<FileInfo> allfileInfos=new ArrayList<>(16);
         if(Checker.BeNotBlank(path) && Checker.BeNotBlank(parentPath)){
@@ -59,7 +59,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
     public ApiResult uploadFile(List<MultipartFile> files, String filePath) {
         if(Checker.BeNotEmpty(files)){
             checkerFileSize(files);
-            String basePath= thinkCmsConfig.getSiteStaticFileRootPath();
+            String basePath= byteCmsConfig.getSiteStaticFileRootPath();
             String finalPath=basePath+filePath;
             byte[] bs = new byte[1024];
             for (MultipartFile file : files) {
@@ -104,7 +104,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Override
     public ApiResult createFile(String filePath, String fileName) {
-        String basePath = thinkCmsConfig.getSiteStaticFileRootPath();
+        String basePath = byteCmsConfig.getSiteStaticFileRootPath();
         String finalPath = basePath+filePath+File.separator+fileName;
         File file=new File(finalPath);
         file.mkdir();
@@ -113,7 +113,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Override
     public ApiResult getFileContent(String path) {
-        String filePath = thinkCmsConfig.getSiteStaticFileRootPath() + File.separator + path;
+        String filePath = byteCmsConfig.getSiteStaticFileRootPath() + File.separator + path;
         File file = new File(filePath);
         try {
             if (file.isFile()) {
@@ -142,7 +142,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Override
     public ApiResult deleteFile(String filePath) {
-        filePath = thinkCmsConfig.getSiteStaticFileRootPath() + File.separator + filePath;
+        filePath = byteCmsConfig.getSiteStaticFileRootPath() + File.separator + filePath;
         File file = new File(filePath);
         boolean res = true;
         if (file.exists()) {
@@ -165,7 +165,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
             templateDto.setFilePath("");
         }
         String fileName = templateDto.getIsDirectory()?templateDto.getFileName():templateDto.getFileName()+Constants.DEFAULT_HTML_SUFFIX;
-        File file = new File(thinkCmsConfig.getSiteStaticFileRootPath()+File.separator+templateDto.getFilePath()+File.separator+fileName);
+        File file = new File(byteCmsConfig.getSiteStaticFileRootPath()+File.separator+templateDto.getFilePath()+File.separator+fileName);
         checkerFileIsExist(file);
         try {
             if(templateDto.getIsDirectory()){
@@ -205,7 +205,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
     }
 
     private File checkFileIsExist(String path) {
-        String filePath = thinkCmsConfig.getSiteStaticFileRootPath() + File.separator + path;
+        String filePath = byteCmsConfig.getSiteStaticFileRootPath() + File.separator + path;
         File file = new File(filePath);
         if (!(file.exists() && file.isFile())) {
             throw new CustomException(ApiResult.result(20000));
@@ -218,7 +218,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
         if (Checker.BeNotEmpty(treefiles)) {
             treeFileInfoDto.setChildren(treefiles);
             for (TreeFileInfo treeFileInfo : treeFileInfoDto.getChildren()) {
-                String relativePath = path.replace(thinkCmsConfig.getSiteStaticFileRootPath(), "") + File.separator + treeFileInfo.getFileInfo().getFileName();
+                String relativePath = path.replace(byteCmsConfig.getSiteStaticFileRootPath(), "") + File.separator + treeFileInfo.getFileInfo().getFileName();
                 treeFileInfo.setIsLeaf(!treeFileInfo.getFileInfo().isDirectory()).setRelativePath(relativePath);
                 if (treeFileInfo.getFileInfo().isDirectory()) {
                     String filePath = path + File.separator + treeFileInfo.getFileInfo().getFileName();
@@ -248,7 +248,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Override
     public void downZip(String path,HttpServletResponse response) {
-        String tempPath = thinkCmsConfig.getSiteStaticFileRootPath();
+        String tempPath = byteCmsConfig.getSiteStaticFileRootPath();
         String fileName = path.substring(path.lastIndexOf(File.separator),path.length());
         if(Checker.BeNotBlank(path)){
             tempPath=tempPath+File.separator+path;
@@ -259,7 +259,7 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
         }
         if(file.listFiles().length!=0){
             String timeStr= DateTimeFormatter.ofPattern(Constants.YMDHM).format(LocalDateTime.now());
-            String fileId= thinkCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
+            String fileId= byteCmsConfig.getSourceRootPath()+File.separator+timeStr+Constants.DEFAULT_ZIP_SUFFIX;
             File filePath=null;
             InputStream in = null;
             OutputStream out = null;
@@ -308,13 +308,13 @@ public class WebStaticFileServiceImpl implements WebStaticFileService {
 
     @Override
     public void importFile(MultipartFile multipartFile, Integer type) {
-        String path = thinkCmsConfig.getSourceTempPath();
+        String path = byteCmsConfig.getSourceTempPath();
        String suffix= FileUtil.getSuffix(multipartFile.getOriginalFilename());
        if(!Constants.DEFAULT_ZIP_SUFFIX.equals(Constants.DOT+suffix)){
            throw new CustomException(ApiResult.result(20016));
        }
        if(type ==1){
-           path = thinkCmsConfig.getSourceFragmentFilePath();
+           path = byteCmsConfig.getSourceFragmentFilePath();
        }
         File toFile =null;
         try {

@@ -112,7 +112,7 @@ public class OrgCategoryServiceImpl extends BaseServiceImpl<OrgCategoryDto, OrgC
             root.setId("-1");
             root.setParentId("0");
             root.setHasParent(false);
-            root.setHasChildren(true);
+            root.setHasChildrenNode(true);
             root.setChildren(topNodes);
             root.setTitle("顶级节点");
         }

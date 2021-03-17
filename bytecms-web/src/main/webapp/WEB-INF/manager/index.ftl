@@ -334,15 +334,6 @@
                     return item.name == sub.name
                 })
 
-                // if (sub.syncStoreUrl) {
-                //     sub.modelUrl = sub.syncStoreUrl;
-                //     sub.name = 'mstore';
-                //     sub.isStore = true;
-                //     !result ? this.editableTabs.push(sub) : ""
-                // } else {
-                //     !result ? this.editableTabs.push(sub) : ""
-                // }
-
                 var menu = {};
                     menu.id = sub.id;
                     menu.name = sub.name;
@@ -454,10 +445,10 @@
                 this.asideMenuList.some(function (item, index) {
                     return item.id == menu.id
                 }) || this.asideMenuList.push(menu)
-                // this.getSubMenu(menu.id)[0] && this.$refs.menu.open(this.getSubMenu(menu.id)[0].name);
+                //this.getSubMenu(menu.id)[0] && this.$refs.menu.open(this.getSubMenu(menu.id)[0].name);
                 var children = [];
                 this.menuList.forEach(function (tab) {
-                    if (tab.modelId == menu.id) {
+                    if (tab.parentId == menu.id) {
                         children.push(tab)
                     }
                 })

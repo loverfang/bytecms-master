@@ -93,7 +93,6 @@ public class BaseContextKit {
         set(SecurityConstants.OPEN_ID, openId);
     }
 
-
     private static String returnObjectValue(Object value) {
         return value == null ? null : value.toString();
     }

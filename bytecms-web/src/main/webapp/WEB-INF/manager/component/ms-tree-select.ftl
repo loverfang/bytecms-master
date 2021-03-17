@@ -33,7 +33,6 @@
                         label: 'name',
                         // 显示名称
                         children: 'children' // 子级字段名
-
                     };
                 }
             },
@@ -94,6 +93,7 @@
 
                 this.initScroll();
             },
+
             // 初始化滚动条
             initScroll: function () {
                 this.$nextTick(function () {
@@ -105,6 +105,7 @@
                     });
                 });
             },
+
             // 切换选项
             handleNodeClick: function (node) {
                 /*this.valueTitle = node[this.props.label]
@@ -115,6 +116,7 @@
                 });
                 this.defaultExpandedKey = [];
             },
+
             // 清除选中
             clearHandle: function () {
                 this.valueTitle = '';
@@ -135,11 +137,9 @@
         watch: {
             value: function () {
                 this.valueId = this.value;
-
                 if (this.value == 0) {
                     this.valueTitle = '顶级菜单';
                 }
-
                 this.initHandle();
             }
         }
