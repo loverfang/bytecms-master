@@ -82,7 +82,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         try {
-            this.customJwtHandler.handlerJwtToken(authentication, tokenStore);
+            customJwtHandler.handlerJwtToken(authentication, tokenStore);
         } catch (CustomException error) {
             throw new AccessDeniedException(error.getMessage());
         }

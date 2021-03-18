@@ -58,7 +58,6 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     AccessDeniedHandler accessDeniedHandler;
 
     /**
-     *
      * 配置从哪里获取ClientDetails信息。
      * 在client_credentials授权方式下，只要这个ClientDetails信息。
      * @param clients
@@ -78,6 +77,7 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
      *  默认过滤器：BasicAuthenticationFilter
      *  1、oauth_client_details表中clientSecret字段加密【ClientDetails属性secret】
      *  2、CheckEndpoint类的接口 oauth/check_token 无需经过过滤器过滤，默认值：denyAll()
+     *
      * 对以下的几个端点进行权限配置：
      * /oauth/authorize：授权端点
      * /oauth/token：令牌端点
@@ -89,12 +89,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
         security
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .tokenKeyAccess("permitAll()")
-                .checkTokenAccess("isAuthenticated()")
-                .accessDeniedHandler(accessDeniedHandler)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .allowFormAuthenticationForClients();
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .tokenKeyAccess("permitAll()")
+            .checkTokenAccess("isAuthenticated()")
+            .accessDeniedHandler(accessDeniedHandler)
+            .passwordEncoder(bCryptPasswordEncoder)
+            .allowFormAuthenticationForClients();
     }
 
     /**
@@ -108,12 +108,12 @@ public class OAuth2AuthorizationServerConfig extends AuthorizationServerConfigur
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new TokenEnhancer[] { tokenEnhancer, jwtAccessTokenConverter }));
         endpoints
-                .tokenStore(tokenStore)
-                .tokenEnhancer(tokenEnhancerChain)
-                .authenticationManager(authenticationManager)
-                .reuseRefreshTokens(false)
-                .userDetailsService(userDetailsService)
-                .allowedTokenEndpointRequestMethods(new HttpMethod[] { HttpMethod.GET, HttpMethod.POST });
+            .tokenStore(tokenStore)
+            .tokenEnhancer(tokenEnhancerChain)
+            .authenticationManager(authenticationManager)
+            .reuseRefreshTokens(false)
+            .userDetailsService(userDetailsService)
+            .allowedTokenEndpointRequestMethods(new HttpMethod[] { HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE});
     }
 
 }

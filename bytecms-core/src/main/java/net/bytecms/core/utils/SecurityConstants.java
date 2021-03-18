@@ -59,8 +59,8 @@ public interface SecurityConstants {
     //jwt 秘钥
     final String SECURITYSECRET="j83jxnjsleubf73fdsEWrtsduids";
 
-
-    public static final Long expireTime=1728000L;//20 days
+    //20 days
+    public static final Long expireTime=1728000L;
 
     /**
      * sys_oauth_client_details 表的字段，不包括client_id、client_secret

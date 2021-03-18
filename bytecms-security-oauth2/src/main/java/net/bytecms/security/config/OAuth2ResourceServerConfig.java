@@ -61,10 +61,10 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources
-                .tokenServices(tokenServices)
-                .tokenExtractor(tokenExtractor)
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(accessDeniedHandler);
+            .tokenServices(tokenServices)
+            .tokenExtractor(tokenExtractor)
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .accessDeniedHandler(accessDeniedHandler);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                     return object;
                 }
             }).and()
-            .csrf().disable()
+
             .addFilterBefore(filter, FilterSecurityInterceptor.class);
     }
 

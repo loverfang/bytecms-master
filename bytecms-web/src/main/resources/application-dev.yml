@@ -143,6 +143,7 @@ permission:
         - /user/info
         - /user/list
         - /common
+
       ignore:
         - /error/**
         - /favicon.ico

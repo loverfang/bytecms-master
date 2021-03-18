@@ -39,7 +39,8 @@ public class JwtUtil {
         //添加构成JWT的参数
         JwtBuilder builder = Jwts.builder().setHeaderParam("typ", "JWT")
         .setPayload(JSON.toJSONString(map))
-        .signWith(signatureAlgorithm, base64Security.getBytes()); //估计是第三段密钥
+        //估计是第三段密钥
+        .signWith(signatureAlgorithm, base64Security.getBytes());
         //生成JWT
         return builder.compact();
     }
