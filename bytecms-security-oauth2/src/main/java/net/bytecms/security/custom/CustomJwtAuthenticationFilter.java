@@ -60,7 +60,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
     TokenExtractor tokenExtractor = (TokenExtractor)SpringContextHolder.getBean(TokenExtractor.class);
 
     public TokenExtractor getTokenExtractor() {
-        return this.tokenExtractor;
+        return tokenExtractor;
     }
 
     public CustomJwtAuthenticationFilter(RequestMatcher matcher, AbsCustomJwtHandler customJwtHandler) {
@@ -76,7 +76,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        Authentication authentication = this.tokenExtractor.extract(request);
+        Authentication authentication = tokenExtractor.extract(request);
         if (Checker.BeNull(authentication)) {
             throw new AccessDeniedException("Invalid Jwt is invalid!");
         }

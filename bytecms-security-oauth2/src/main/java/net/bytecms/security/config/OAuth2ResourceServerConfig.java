@@ -69,7 +69,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        List<String> permitAllEndpointList = this.permitAllUrlProperties.ignores();
+        List<String> permitAllEndpointList = permitAllUrlProperties.ignores();
         CustomJwtAuthenticationFilter filter = new CustomJwtAuthenticationFilter(null, tokenStore, customJwtHandler);
         http
             .authorizeRequests()
